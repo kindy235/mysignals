@@ -1,0 +1,13 @@
+
+[
+    {
+        "username": "mod",
+        "email": "mod@gmail.com",
+        "password": "12345678",
+        "role": ["mod", "user"]
+    },
+    
+    {
+        "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtb2QiLCJpYXQiOjE2ODc4MzE0NDgsImV4cCI6MTY4NzkxNzg0OH0.EzXZ86MWMCyhfxRAgUtJ_yXUEghueQFojq1Axx5je7E"
+    }
+]

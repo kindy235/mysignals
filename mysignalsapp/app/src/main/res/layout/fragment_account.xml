@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context=".view.AccountFragment">
+
+    <data>
+        <variable
+                name="accountViewModel"
+                type="com.example.mysignalsapp.viewmodel.AccountViewModel" />
+    </data>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/account_fragment"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:textSize="20sp"/>
+
+</layout>

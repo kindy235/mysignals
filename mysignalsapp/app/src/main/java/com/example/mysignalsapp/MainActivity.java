@@ -26,28 +26,6 @@ public class MainActivity extends AppCompatActivity {
     private AccountFragment accountFragment;
     private BottomNavigationView bottomNavigationView;
     private Window window;
-    private static final int REQUEST_ENABLE_BLUETOOTH = 1;
-
-    private BluetoothAdapter bluetoothAdapter;
-
-
-    // Check Bluetooth permissions and enable Bluetooth
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
-            if (resultCode == RESULT_OK) {
-                // Bluetooth has been enabled by the user
-                // Proceed with your Bluetooth operations
-                // ...
-            } else {
-                // User denied enabling Bluetooth
-                // Handle accordingly
-            }
-        }
-    }
 
 
     @SuppressLint("NonConstantResourceId")

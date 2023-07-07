@@ -3,6 +3,8 @@ package com.example.mysignalsapp;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +18,8 @@ import com.example.mysignalsapp.view.AccountFragment;
 import com.example.mysignalsapp.view.HomeFragment;
 import com.example.mysignalsapp.view.SensorFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import static androidx.core.content.ContextCompat.getSystemService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         homeFragment = new HomeFragment();
         replaceFragment(homeFragment);
-
+        BluetoothManager manager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         bottomNavigationView = findViewById(R.id.btn_navigation);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {

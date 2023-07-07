@@ -8,8 +8,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sensors_fragment">Sensors Fragment</string>
-    <string name="home_fragment">Paired Bluetooth Devices</string>
+    <string name="home_fragment">Bluetooth Devices</string>
     <string name="account_fragment">Account Fragment</string>
-    <string name="bluetooth_on">Bluetooth ON</string>
-    <string name="bluetooth_off">Bluetooth OFF</string>
+    <string name="bluetooth_on">Start Scan</string>
+    <string name="bluetooth_off">Stop Scan</string>
 </resources>

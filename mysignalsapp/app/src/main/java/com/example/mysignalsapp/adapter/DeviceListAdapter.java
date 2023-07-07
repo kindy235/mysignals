@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,21 +14,26 @@ import com.example.mysignalsapp.databinding.DeviceItemBinding;
 import com.example.mysignalsapp.view.HomeFragment;
 import com.example.mysignalsapp.viewmodel.HomeViewModel;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.ViewHolder>{
 
-    private HomeFragment.OnClickOnNoteListener listener;
-    private List<BluetoothDevice> bluetoothDeviceList;
+    private ArrayList<BluetoothDevice> bluetoothDeviceList;
 
-    public DeviceListAdapter(List<BluetoothDevice> bluetoothDeviceList, HomeFragment.OnClickOnNoteListener listener) {
-        //assert bluetoothDeviceList != null;
-        this.bluetoothDeviceList = bluetoothDeviceList;
-        this.listener = listener;
+    public interface DeviceClickListener {
+        void onDeviceClick(BluetoothDevice device);
     }
 
-    @NonNull
-    @NotNull
+    private DeviceClickListener listener;
+
+    public DeviceListAdapter(ArrayList<BluetoothDevice> bluetoothDeviceList) {
+        assert bluetoothDeviceList != null;
+        this.bluetoothDeviceList = bluetoothDeviceList;
+    }
+
+
     @Override
     public ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         DeviceItemBinding binding = DataBindingUtil.inflate(
@@ -37,22 +43,23 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull @NotNull DeviceListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
 
-        if (bluetoothDeviceList.get(position) != null) {
-            BluetoothDevice bluetoothDevice = bluetoothDeviceList.get(position);
-            holder.homeViewModel.setBluetoothDevice(bluetoothDevice);
+        BluetoothDevice device = bluetoothDeviceList.get(position);
+        if (device != null) {
+            holder.homeViewModel.setBluetoothDevice(device);
         }
     }
 
     @Override
     public int getItemCount() {
-        return bluetoothDeviceList.size();
+        try {
+            return bluetoothDeviceList.size();
+        } catch (Exception ex){return 0;}
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private DeviceItemBinding binding;
-        TextView deviceName;
         private HomeViewModel homeViewModel = new HomeViewModel();
         ViewHolder(DeviceItemBinding binding) {
             super(binding.getRoot());
@@ -60,11 +67,31 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
             this.binding = binding;
             this.binding.setHomeViewModel(homeViewModel);
             this.binding.getRoot().setOnClickListener(view -> {
+
                 BluetoothDevice bluetoothDevice = homeViewModel.getBluetoothDevice();
-                if (listener != null)
-                    listener.onClickOnNote(bluetoothDevice);
+                /*
+                if (bluetoothDevice!=null) {
+                    Toast.makeText(view.getContext(), bluetoothDevice.getName(), Toast.LENGTH_SHORT).show();
+                }
+
+                 */
+                if (listener != null && bluetoothDevice!=null)
+                    listener.onDeviceClick(bluetoothDevice);
             });
 
         }
     }
+
+    public void setDeviceClickListener(DeviceClickListener listener) {
+        this.listener = listener;
+    }
+
+    public void updateData(ArrayList<BluetoothDevice> newBluetoothDeviceList) {
+        if (newBluetoothDeviceList!=null) {
+            bluetoothDeviceList = newBluetoothDeviceList;
+            notifyDataSetChanged();
+        }
+    }
+
+
 }

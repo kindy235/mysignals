@@ -19,7 +19,7 @@
                 android:textColor="@color/black"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="3dp"
                 android:textStyle="bold"
                 android:textSize="20sp"/>
 
@@ -29,25 +29,39 @@
                 android:layout_marginTop="8sp"
                 android:layout_marginStart="16sp"
                 android:layout_marginEnd="16sp"
-                android:padding="10sp"
+                android:padding="8sp"
                 android:background="@color/material_dynamic_neutral90"
                 android:orientation="horizontal">
-            <TextView
-                    android:id="@+id/list_title"
+
+            <Button
+                    android:id="@+id/btn_start_scan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/bluetooth_on"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"/>
+                    android:text="@string/bluetooth_on"/>
 
-            <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/switch_btn"
-                    android:layout_width="match_parent"
+            <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+            <Button
+                    android:id="@+id/btn_stop_scan"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="false"
-                    android:contentDescription="@string/bluetooth_off"/>
+                    android:text="@string/bluetooth_off"/>
 
         </LinearLayout>
+
+        <TextView
+                android:id="@+id/scan_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="5dp"/>
 
         <androidx.cardview.widget.CardView
                 android:id="@+id/card_view_list"
@@ -62,12 +76,12 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/device_list"
-                        android:divider="@null"
                         android:layout_width="match_parent"
                         android:background="@color/white"
                         android:layout_height="match_parent">
                 </androidx.recyclerview.widget.RecyclerView>
         </androidx.cardview.widget.CardView>
+
     </LinearLayout>
 
 </layout>

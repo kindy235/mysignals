@@ -26,5 +26,5 @@ public class HomeViewModel extends BaseObservable {
     public String getAddress() {
         return bluetoothDevice.getAddress();
     }
-    
+
 }

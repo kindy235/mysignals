@@ -9,10 +9,9 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import com.example.mysignalsapp.R;
-import com.example.mysignalsapp.databinding.FragmentSensorBinding;
-import com.example.mysignalsapp.viewmodel.SensorViewModel;
+import com.example.mysignalsapp.databinding.FragmentUserdataBinding;
 
-public class SensorFragment extends Fragment {
+public class UserDataFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -20,12 +19,8 @@ public class SensorFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
 
-        FragmentSensorBinding binding = DataBindingUtil.inflate(inflater,
-                R.layout.fragment_sensor, container, false);
-
-        SensorViewModel sensorViewModel = new SensorViewModel();
-
-        binding.setSensorViewModel(sensorViewModel);
+        FragmentUserdataBinding binding = DataBindingUtil.inflate(inflater,
+                R.layout.fragment_userdata, container, false);
 
         return binding.getRoot();
     }

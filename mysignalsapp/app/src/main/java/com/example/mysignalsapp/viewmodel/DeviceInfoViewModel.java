@@ -19,7 +19,7 @@ public class DeviceInfoViewModel extends BaseObservable {
     }
 
     @Bindable
-    public String getDeviceAddress() {
+    public String getAddress() {
         return device != null ? device.getAddress() : "";
     }
 

@@ -7,24 +7,24 @@ import androidx.databinding.Bindable;
 
 public class HomeViewModel extends BaseObservable {
 
-    private BluetoothDevice bluetoothDevice;
+    private BluetoothDevice device;
     public void setBluetoothDevice(BluetoothDevice device) {
-        this.bluetoothDevice = device;
+        this.device = device;
         notifyChange();
     }
     public BluetoothDevice getBluetoothDevice() {
-        return bluetoothDevice;
+        return device;
     }
 
     @SuppressLint("MissingPermission")
     @Bindable
     public String getName() {
-        return bluetoothDevice.getName();
+        return device != null ? device.getName() : "";
     }
 
     @Bindable
     public String getAddress() {
-        return bluetoothDevice.getAddress();
+        return device != null ? device.getAddress() : "";
     }
 
 }

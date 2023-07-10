@@ -2,12 +2,9 @@ package com.example.mysignalsapp;
 
 
 import android.annotation.SuppressLint;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -16,17 +13,15 @@ import androidx.fragment.app.FragmentManager;
 import com.example.mysignalsapp.databinding.ActivityMainBinding;
 import com.example.mysignalsapp.view.AccountFragment;
 import com.example.mysignalsapp.view.HomeFragment;
-import com.example.mysignalsapp.view.SensorFragment;
+import com.example.mysignalsapp.view.UserDataFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import static androidx.core.content.ContextCompat.getSystemService;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private  FragmentManager fragmentManager;
     private HomeFragment homeFragment;
-    private SensorFragment sensorFragment;
+    private UserDataFragment userDataFragment;
     private AccountFragment accountFragment;
     private BottomNavigationView bottomNavigationView;
     private Window window;
@@ -54,10 +49,10 @@ public class MainActivity extends AppCompatActivity {
                     replaceFragment(homeFragment);
                     break;
                 case R.id.action_sensors:
-                    if (sensorFragment == null){
-                        sensorFragment = new SensorFragment();
+                    if (userDataFragment == null){
+                        userDataFragment = new UserDataFragment();
                     }
-                    replaceFragment(sensorFragment);
+                    replaceFragment(userDataFragment);
                     break;
                 case R.id.action_account:
                     if (accountFragment == null){
@@ -74,12 +69,12 @@ public class MainActivity extends AppCompatActivity {
 
         if (fragmentManager == null) {
             fragmentManager = getSupportFragmentManager();
-
         }
         // Sert à remplacer un fragement dans fragment_container de l'activity principale
         if (fragment != null) {
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, fragment)
+                    //.addToBackStack(null)
                     .commit();
         }
     }

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-             xmlns:tools="http://schemas.android.com/tools"
-             tools:context=".view.SensorFragment">
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context=".view.UserDataFragment">
 
     <data>
         <variable
-                name="sensorViewModel"
-                type="com.example.mysignalsapp.viewmodel.SensorViewModel" />
+                name="userDataViewModel"
+                type="com.example.mysignalsapp.viewmodel.UserDataViewModel" />
     </data>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sensors_fragment"
+            android:text="@string/userdata_fragment"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:layout_gravity="center"

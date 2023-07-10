@@ -29,8 +29,8 @@
                 android:layout_marginTop="8sp"
                 android:layout_marginStart="16sp"
                 android:layout_marginEnd="16sp"
-                android:padding="8sp"
-                android:background="@color/material_dynamic_neutral90"
+                android:padding="3sp"
+                android:background="@color/material_dynamic_neutral_variant95"
                 android:orientation="horizontal">
 
             <Button
@@ -71,8 +71,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                android:visibility="gone">
+                app:cardCornerRadius="12dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/device_list"

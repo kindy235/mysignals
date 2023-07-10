@@ -4,12 +4,13 @@
     <string name="ble_not_supported">bluetooth function supported</string>
     <string name="home">Home</string>
     <string name="sensors">Sensors</string>
-    <string name="account">Account</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="account">Profile</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="sensors_fragment">Sensors Fragment</string>
+    <string name="userdata_fragment">User Data Fragment</string>
     <string name="home_fragment">Bluetooth Devices</string>
     <string name="account_fragment">Account Fragment</string>
     <string name="bluetooth_on">Start Scan</string>
     <string name="bluetooth_off">Stop Scan</string>
+    <string name="user_data">User Data</string>
+    <string name="settings">Settings</string>
 </resources>

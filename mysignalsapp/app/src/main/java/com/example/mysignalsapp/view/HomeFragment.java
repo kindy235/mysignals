@@ -1,76 +1,55 @@
 package com.example.mysignalsapp.view;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
-import android.bluetooth.*;
-import android.content.Context;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.Manifest;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.mysignalsapp.R;
 import com.example.mysignalsapp.adapter.DeviceListAdapter;
-import com.example.mysignalsapp.viewmodel.HomeViewModel;
-import com.libelium.mysignalsconnectkit.BluetoothManagerHelper;
-import com.libelium.mysignalsconnectkit.BluetoothManagerService;
-import com.libelium.mysignalsconnectkit.callbacks.BluetoothManagerCharacteristicsCallback;
-import com.libelium.mysignalsconnectkit.callbacks.BluetoothManagerHelperCallback;
-import com.libelium.mysignalsconnectkit.callbacks.BluetoothManagerQueueCallback;
-import com.libelium.mysignalsconnectkit.callbacks.BluetoothManagerServicesCallback;
-import com.libelium.mysignalsconnectkit.pojo.LBSensorObject;
 import com.example.mysignalsapp.databinding.FragmentHomeBinding;
+import com.libelium.mysignalsconnectkit.BluetoothManagerHelper;
+import com.libelium.mysignalsconnectkit.callbacks.BluetoothManagerHelperCallback;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import static android.app.appsearch.AppSearchResult.RESULT_OK;
-import static androidx.core.content.ContextCompat.getSystemService;
-import static com.example.mysignalsapp.view.HomeFragment.*;
-import static com.libelium.mysignalsconnectkit.BluetoothManagerHelper.REQUEST_ENABLE_BT;
 
 
+@SuppressLint("MissingPermission")
 public class HomeFragment extends Fragment implements
         BluetoothManagerHelperCallback,
-        BluetoothManagerServicesCallback,
         DeviceListAdapter.DeviceClickListener {
 
 
+    private static final int REQUEST_ENABLE_BLUETOOTH= 1000;
     private static final int REQUEST_BLUETOOTH_ADMIN_PERMISSION = 1;
     private static final int REQUEST_BLUETOOTH_PERMISSION = 2;
     private static final int REQUEST_BLUETOOTH_SCAN_PERMISSION = 3;
     private static final int REQUEST_BLUETOOTH_ADVERTISE_PERMISSION = 4;
     private static final int LOCATION_PERMISSION = 5;
 
-    private BluetoothManagerService mService;
     private BluetoothManagerHelper bluetoothManager;
-    private BluetoothDevice selectedDevice;
     private ArrayList<BluetoothDevice> bluetoothDeviceList;
-    private final String kMySignalsId = "MySignals 000150".toLowerCase();
 
-    private ArrayList<LBSensorObject> sensors;
     private DeviceListAdapter adapter;
     private CardView cardView;
     private Button startScanBtn;
@@ -78,6 +57,7 @@ public class HomeFragment extends Fragment implements
     private RecyclerView devicesListRecyclerView;
     private TextView scanResult;
 
+    @SuppressLint("SetTextI18n")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -93,42 +73,36 @@ public class HomeFragment extends Fragment implements
         startScanBtn = binding.getRoot().findViewById(R.id.btn_start_scan);
         stopScanBtn = binding.getRoot().findViewById(R.id.btn_stop_scan);
         scanResult = binding.getRoot().findViewById(R.id.scan_result);
+
+
         bluetoothManager = BluetoothManagerHelper.getInstance();
         bluetoothManager.setInitParameters(this, this.getContext());
 
         devicesListRecyclerView = binding.getRoot().findViewById(R.id.device_list);
         devicesListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        bluetoothDeviceList = new ArrayList<>();
+        //devicesListRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        bluetoothDeviceList = (ArrayList<BluetoothDevice>) bluetoothManager.getBondedDevices();
+        if (bluetoothDeviceList == null){
+            bluetoothDeviceList = new ArrayList<>();
+        }
         adapter = new DeviceListAdapter(bluetoothDeviceList);
         adapter.setDeviceClickListener(this);
         devicesListRecyclerView.setAdapter(adapter);
 
-        try {
-            mService = BluetoothManagerService.getInstance();
-            mService.initialize(getContext());
-            mService.setServicesCallback(this);
-            mService.setCharacteristicsCallback((BluetoothManagerCharacteristicsCallback) this);
-            mService.setQueueCallback((BluetoothManagerQueueCallback) this);
-
-        } catch (Exception ignored) {
-        }
 
         isRequestBluetoothPermissionsOK();
         requestLocationPermission();
 
         startScanBtn.setOnClickListener(v -> {
             if (isRequestBluetoothPermissionsOK() && bluetoothManager.isBluetoothEnabled()) {
-                bluetoothManager.stopLeScan();
-                scanResult.setText("Bluetooth Scan Started...");
+                scanResult.setText("scanning in progress...");
                 scanBluetoothDevices();
-
-
-                //bluetoothManager.startLEScan(true);
             }
         });
 
         stopScanBtn.setOnClickListener(v -> {
             if (isRequestBluetoothPermissionsOK()) {
+                scanResult.setText("scanning stopped");
                 bluetoothManager.stopLeScan();
             }
         });
@@ -137,24 +111,7 @@ public class HomeFragment extends Fragment implements
 
     }
 
-    // Check Bluetooth permissions and enable Bluetooth
 
-    /*
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
-            case REQUEST_ENABLE_BT:
-            case REQUEST_BLUETOOTH_PERMISSION:
-                if (resultCode == RESULT_OK) {
-                    Toast.makeText(getContext(), "bluetooth ON", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "bluetooth OFF", Toast.LENGTH_SHORT).show();
-                }
-                break;
-        }
-    }
-
-     */
 
     private boolean isRequestBluetoothPermissionsOK() {
         boolean result = false;
@@ -168,6 +125,19 @@ public class HomeFragment extends Fragment implements
                             Manifest.permission.BLUETOOTH_CONNECT,
                     }, REQUEST_BLUETOOTH_PERMISSION);
                 }
+
+                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(requireActivity(), new String[]{
+                            Manifest.permission.BLUETOOTH_SCAN,
+                    }, REQUEST_BLUETOOTH_SCAN_PERMISSION);
+                }
+
+                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(requireActivity(), new String[]{
+                            Manifest.permission.BLUETOOTH_ADVERTISE,
+                    }, REQUEST_BLUETOOTH_ADVERTISE_PERMISSION);
+                }
+
             } else {
                 if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED){
                     ActivityCompat.requestPermissions(requireActivity(), new String[]{
@@ -181,21 +151,9 @@ public class HomeFragment extends Fragment implements
                 }
             }
 
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(requireActivity(), new String[]{
-                        Manifest.permission.BLUETOOTH_SCAN,
-                }, REQUEST_BLUETOOTH_SCAN_PERMISSION);
-            }
-
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(requireActivity(), new String[]{
-                        Manifest.permission.BLUETOOTH_ADVERTISE,
-                }, REQUEST_BLUETOOTH_ADVERTISE_PERMISSION);
-            }
-
             if (!bluetoothManager.isBluetoothEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
             }
 
             result = true;
@@ -213,87 +171,30 @@ public class HomeFragment extends Fragment implements
     }
 
 
-
-
-
     private void scanBluetoothDevices() {
         bluetoothDeviceList = (ArrayList<BluetoothDevice>) bluetoothManager.getBondedDevices();
         if (bluetoothDeviceList.size() > 0) {
-
-            selectedDevice = null;
-
-            for (BluetoothDevice deviceItem : bluetoothDeviceList) {
-
-                String name = deviceItem.getName();
-
-                Log.d("DEBUG", "Address: " + name);
-
-                if (name != null) {
-                    //scanResult.setText(name +"::" +Integer.toString(bluetoothDeviceList.size()));
-                    if (name.toLowerCase().contains(kMySignalsId)) {
-                        //showToast(name);
-
-                        Log.d("DEBUG", "Address: " + name);
-                        this.selectedDevice = deviceItem;
-                        break;
-                    }
-                }
-
-            }
-
             adapter.updateData(bluetoothDeviceList);
-            cardView.setVisibility(View.VISIBLE);
+            //cardView.setVisibility(View.VISIBLE);
+        } // cardView.setVisibility(View.GONE);
 
-            if (selectedDevice != null) {
-                performConnection();
-            }else {
-                bluetoothManager.startLEScan(true);
-            }
-
-        }else {
-            cardView.setVisibility(View.GONE);
-            bluetoothManager.startLEScan(true);
-        }
+        bluetoothManager.startLEScan(true);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onListDevicesFound(ArrayList<BluetoothDevice> devices) {
-        //bluetoothDeviceList.clear();
         for (BluetoothDevice deviceItem : devices) {
-
             String name = deviceItem.getName();
             if (name != null) {
-                //showToast("Scan Result : "+name);
                 if (!bluetoothDeviceList.contains(deviceItem)) {
                     bluetoothDeviceList.add(deviceItem);
                 }
 
                 adapter.updateData(bluetoothDeviceList);
-                cardView.setVisibility(View.VISIBLE);
-                //adapter.updateData(bluetoothDeviceList);
+                //cardView.setVisibility(View.VISIBLE);
 
                 scanResult.setText(name +"::" + bluetoothDeviceList.size());
-                //bluetoothManager.stopLeScan();
-                if (name.toLowerCase().contains(kMySignalsId)) {
-                    Log.d("FOUND!!!!!!!!!!!!!!!!", name);
-
-                    Log.d("DEBUG", "Address: " + name);
-                    this.selectedDevice = deviceItem;
-                    break;
-                }
-                bluetoothManager.stopLeScan();
-            }
-        }
-
-
-        if (selectedDevice != null) {
-            bluetoothManager.stopLeScan();
-            boolean bonded = mService.startBonding(selectedDevice);
-            if (bonded) {
-                showToast("Bonding starting...");
-                Log.d("DEBUG", "Bonding starting...");
-                performConnection();
             }
         }
         //bluetoothManager.stopLeScan();
@@ -304,69 +205,10 @@ public class HomeFragment extends Fragment implements
         //bluetoothManager.startLEScan(true);
     }
 
-    private void performConnection() {
-        final Handler handler = new Handler();
-        final Runnable postExecution = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (mService != null) {
-                        if (mService.discoverServices()) {
-                            Log.d("DEBUG", "Device discoverServices: " + selectedDevice.getAddress());
-                        }
-                    }
-                } catch (Exception ignored) {
-                }
-            }
-        };
-        if (mService.connectToDevice(selectedDevice, getContext())) {
-            scanResult.setText("Bluetooth Scan Stopped...");
-            Log.d("DEBUG", "Device connected!!");
-            handler.postDelayed(postExecution, 2000);
-        }
-    }
-
-
-    @Override
-    public void onBondAuthenticationError(BluetoothGatt bluetoothGatt) {
-
-    }
-
-    @Override
-    public void onBonded() {
-        showToast("Bonded success");
-    }
-
-    @Override
-    public void onBondedFailed() {
-        showToast("Bonded failed");
-    }
-
-    @Override
-    public void onConnectedToDevice(BluetoothDevice bluetoothDevice, int i) {
-        showToast("Device connected!!");
-        scanResult.setText("Device connected!!");
-    }
-
-    @Override
-    public void onServicesFound(List<BluetoothGattService> list) {
-
-    }
-
-    @Override
-    public void onDisconnectFromDevice(BluetoothDevice bluetoothDevice, int i) {
-        showToast("Device disconnected!!");
-    }
-
-    @Override
-    public void onReadRemoteRssi(int i, int i1) {
-
-    }
 
     @Override
     public void onDeviceClick(BluetoothDevice device) {
-        String name = device.getName();
-        showToast(name);
+
         // Ouvrez le fragment DeviceFragmentInfo et transmettez les informations du dispositif
         DeviceInfoFragment deviceInfoFragment = new DeviceInfoFragment();
         deviceInfoFragment.setDevice(device);

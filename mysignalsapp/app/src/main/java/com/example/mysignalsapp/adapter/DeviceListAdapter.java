@@ -34,6 +34,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
     }
 
 
+    @NotNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         DeviceItemBinding binding = DataBindingUtil.inflate(
@@ -59,22 +60,14 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private DeviceItemBinding binding;
-        private HomeViewModel homeViewModel = new HomeViewModel();
-        ViewHolder(DeviceItemBinding binding) {
-            super(binding.getRoot());
+        private final HomeViewModel homeViewModel = new HomeViewModel();
+        ViewHolder(DeviceItemBinding deviceItemBinding) {
+            super(deviceItemBinding.getRoot());
 
-            this.binding = binding;
-            this.binding.setHomeViewModel(homeViewModel);
-            this.binding.getRoot().setOnClickListener(view -> {
+            deviceItemBinding.setHomeViewModel(homeViewModel);
+            deviceItemBinding.getRoot().setOnClickListener(view -> {
 
                 BluetoothDevice bluetoothDevice = homeViewModel.getBluetoothDevice();
-                /*
-                if (bluetoothDevice!=null) {
-                    Toast.makeText(view.getContext(), bluetoothDevice.getName(), Toast.LENGTH_SHORT).show();
-                }
-
-                 */
                 if (listener != null && bluetoothDevice!=null)
                     listener.onDeviceClick(bluetoothDevice);
             });

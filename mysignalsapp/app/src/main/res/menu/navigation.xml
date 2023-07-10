@@ -4,12 +4,19 @@
             android:id="@+id/action_home"
             android:title="@string/home"
             android:icon="@drawable/ic_home" />
+
     <item
             android:id="@+id/action_sensors"
-            android:title="@string/sensors"
-            android:icon="@drawable/ic_sensors" />
+            android:title="@string/user_data"
+            android:icon="@drawable/ic_data" />
+
     <item
             android:id="@+id/action_account"
             android:title="@string/account"
             android:icon="@drawable/ic_account" />
+
+    <item
+            android:id="@+id/action_settings"
+            android:title="@string/settings"
+            android:icon="@drawable/ic_settings" />
 </menu>

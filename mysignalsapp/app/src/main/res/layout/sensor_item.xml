@@ -9,10 +9,8 @@
 
     <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="8sp"
-            android:layout_marginStart="10sp"
-            android:layout_marginEnd="10sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
             android:padding="8sp"
             app:cardCornerRadius="5sp">
         <LinearLayout
@@ -23,32 +21,33 @@
                 android:orientation="horizontal">
                 <ImageView
                         android:id="@+id/sensor_image"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
                         android:contentDescription="image"
                         android:src="@drawable/ic_sensors"
                         tools:ignore="HardcodedText"/>
-                <TextView
-                        android:id="@+id/sensor_name"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textColor="#9C27B0"
-                        android:layout_marginEnd="8dp"
-                        android:text="AIRFLOW"/>
-                <TextView
-                        android:id="@+id/sensor_value"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textColor="@color/teal_700"
-                        android:textSize="36dp"
-                        android:textStyle="bold"
-                        android:text="90"/>
+            <TextView
+                    android:id="@+id/sensor_name"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="#9C27B0"
+                    android:text="@{sensorViewModel.getSensorType}"/>
+            <TextView
+                    android:id="@+id/sensor_value"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:layout_gravity="center"
+                    android:textColor="@color/teal_700"
+                    android:textSize="28dp"
+                    android:textStyle="bold"
+                    android:text="@{sensorViewModel.getSensorValue}"/>
         </LinearLayout>
 
 

@@ -1,4 +1,4 @@
-package com.example.mysignalsapp;
+package com.example.mysignalsapp.view;
 
 
 import android.annotation.SuppressLint;
@@ -10,11 +10,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import com.example.mysignalsapp.R;
+import com.example.mysignalsapp.authentication.responses.PostsResponse;
+import com.example.mysignalsapp.utils.SessionManager;
 import com.example.mysignalsapp.databinding.ActivityMainBinding;
+import com.example.mysignalsapp.service.ApiClient;
 import com.example.mysignalsapp.view.AccountFragment;
 import com.example.mysignalsapp.view.HomeFragment;
 import com.example.mysignalsapp.view.UserDataFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import org.jetbrains.annotations.NotNull;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,4 +86,21 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
     }
+
+    private void fetchPosts() {
+        ApiClient apiClient = new ApiClient();
+        apiClient.getApiService(this).fetchPosts()
+                .enqueue(new Callback<PostsResponse>() {
+                    @Override
+                    public void onResponse(@NotNull Call<PostsResponse> call, @NotNull Response<PostsResponse> response) {
+                        // Handle function to display posts
+                    }
+
+                    @Override
+                    public void onFailure(@NotNull Call<PostsResponse> call, @NotNull Throwable t) {
+                        // Error fetching posts
+                    }
+                });
+    }
+
 }

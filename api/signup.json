@@ -1,8 +1,36 @@
 
-[
+[   
+     
+    [
+        {
+          "type": "TEMP",
+          "date": "2023-07-13",
+          "unit": "%C",
+          "value": 37.0
+        },
+        {
+          "type": "TEMP",
+          "date": "2023-07-13",
+          "unit": "%C",
+          "value": 37.5
+        },
+        {
+          "type": "AIRFLOW",
+          "date": "2023-07-13",
+          "unit": "%",
+          "value": 37.0
+        },
+        {
+            "type": "AIRFLOW",
+            "date": "2023-07-13",
+            "unit": "%",
+            "value": 37.5
+        }
+      ],
+
     {
-        "username": "mod",
-        "email": "mod@gmail.com",
+        "username": "kindy",
+        "email": "kindy@gmail.com",
         "password": "12345678",
         "role": ["mod", "user"]
     },

@@ -46,7 +46,17 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public List<Sensor> getSensorByType(SensorType type) {
-        return sensorRepository.findByType(type);
+    public List<Sensor> getSensorsByTypeAndByMember(SensorType type, Long memberId) {
+        return sensorRepository.findByTypeAndByMemberId(type, memberId);
+    }
+
+    @Override
+    public List<Sensor> getSensorsByMemberId(Long memberId) {
+        return sensorRepository.findByMemberId(memberId);
+    }
+
+    @Override
+    public void deleteAllSenorsOfMember(Long memberId) {
+        sensorRepository.deleteByMemberId(memberId);
     }
 }

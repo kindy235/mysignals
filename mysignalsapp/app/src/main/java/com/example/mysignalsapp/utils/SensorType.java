@@ -1,4 +1,4 @@
-package com.mysignals.api.utils;
+package com.example.mysignalsapp.utils;
 
 public enum SensorType {
     AIRFLOW,

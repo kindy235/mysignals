@@ -11,45 +11,62 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
+            android:background="@color/material_dynamic_neutral100"
             android:padding="8sp"
             app:cardCornerRadius="5sp">
+
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/material_dynamic_neutral90"
-                style="@style/CardView"
-                android:orientation="horizontal">
-                <ImageView
-                        android:id="@+id/sensor_image"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:background="@color/material_dynamic_neutral100"
+                android:padding="1dp">
+
+            <!-- First Column - Icon of the Sensor -->
+            <ImageView
+                    android:id="@+id/sensor_image"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:textAlignment="center"
+                    android:layout_gravity="center"
+                    android:contentDescription="image"
+                    android:src="@drawable/ic_sensors"
+                    tools:ignore="HardcodedText"/>
+
+            <!-- Second Column - Type and Value of the Sensor -->
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical"
+                    android:paddingStart="16dp">
+
+                <!-- First Line - Type of the Sensor -->
+                <TextView
+                        android:id="@+id/sensor_name"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="#9C27B0"
+                        android:text="@{sensorViewModel.getSensorType}"/>
+
+                <TextView
+                        android:id="@+id/sensor_value"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:textAlignment="center"
                         android:layout_gravity="center"
-                        android:contentDescription="image"
-                        android:src="@drawable/ic_sensors"
-                        tools:ignore="HardcodedText"/>
-            <TextView
-                    android:id="@+id/sensor_name"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textAlignment="center"
-                    android:textColor="#9C27B0"
-                    android:text="@{sensorViewModel.getSensorType}"/>
-            <TextView
-                    android:id="@+id/sensor_value"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:layout_gravity="center"
-                    android:textColor="@color/teal_700"
-                    android:textSize="28dp"
-                    android:textStyle="bold"
-                    android:text="@{sensorViewModel.getSensorValue}"/>
-        </LinearLayout>
+                        android:textColor="@color/teal_700"
+                        android:textSize="28dp"
+                        android:textStyle="bold"
+                        android:text="@{sensorViewModel.getSensorValue}"/>
+            </LinearLayout>
 
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 

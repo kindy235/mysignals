@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
             android:id="@+id/action_home"
             android:title="@string/home"
-            android:icon="@drawable/ic_home" />
+            app:showAsAction="ifRoom"
+            android:icon="@drawable/ic_home"/>
 
     <item
-            android:id="@+id/action_sensors"
+            android:id="@+id/action_data"
             android:title="@string/user_data"
-            android:icon="@drawable/ic_data" />
+            app:showAsAction="ifRoom"
+            android:icon="@drawable/ic_data"/>
 
     <item
             android:id="@+id/action_account"
             android:title="@string/account"
-            android:icon="@drawable/ic_account" />
+            app:showAsAction="ifRoom"
+            android:icon="@drawable/ic_account"/>
 
     <item
             android:id="@+id/action_settings"
             android:title="@string/settings"
-            android:icon="@drawable/ic_settings" />
+            app:showAsAction="ifRoom"
+            android:icon="@drawable/ic_settings"/>
 </menu>

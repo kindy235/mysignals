@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mysignalsapp.R;
 import com.example.mysignalsapp.adapter.SensorAdapter;
 import com.example.mysignalsapp.databinding.DeviceInfoBinding;
+import com.example.mysignalsapp.utils.SensorType;
 import com.example.mysignalsapp.viewmodel.DeviceInfoViewModel;
 import com.libelium.mysignalsconnectkit.BluetoothManagerService;
 import com.libelium.mysignalsconnectkit.callbacks.BluetoothManagerCharacteristicsCallback;
@@ -40,10 +41,11 @@ import java.util.*;
 public class DeviceInfoFragment extends Fragment implements
         BluetoothManagerServicesCallback,
         BluetoothManagerCharacteristicsCallback,
-        BluetoothManagerQueueCallback{
+        BluetoothManagerQueueCallback {
 
     private BluetoothManagerService mService;
     private ArrayList<LBSensorObject> sensorsList;
+    private ArrayList<BluetoothGattCharacteristic> notifyCharacteristics;
     private SensorAdapter sensorAdapter;
     private RecyclerView sensorsRecyclerView;
     private BluetoothDevice device;
@@ -61,7 +63,6 @@ public class DeviceInfoFragment extends Fragment implements
                 R.layout.device_info, container, false);
 
 
-
         DeviceInfoViewModel deviceInfoViewModel = new DeviceInfoViewModel();
         deviceInfoViewModel.setDevice(device);
         binding.setDeviceInfoViewModel(deviceInfoViewModel);
@@ -72,14 +73,19 @@ public class DeviceInfoFragment extends Fragment implements
         sensorsRecyclerView = binding.getRoot().findViewById(R.id.sensors_recycler_view);
         //sensorsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         sensorsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        notifyCharacteristics = new ArrayList<>();
+        /*
         sensorsList = new ArrayList<>();
         LBSensorObject object = LBSensorObject.newInstance();
         object.tag = 1;
         object.tickStatus = true;
         object.uuidString = StringConstants.kUUIDBodyPositionSensor;
         LBSensorObject.preloadValues(object);
+        object.bluetooth_mode = LBSensorObject.BluetoothMode.BLUETOOTH_MODE_REAL_TIME;
         sensorsList.add(object);
-        //initializeSensorsArrayList();
+
+         */
+        initializeSensorsArrayList();
         sensorAdapter = new SensorAdapter(sensorsList);
         sensorsRecyclerView.setAdapter(sensorAdapter);
 
@@ -97,7 +103,7 @@ public class DeviceInfoFragment extends Fragment implements
                 Toast.makeText(getContext(), "Connection in progress...", Toast.LENGTH_SHORT).show();
                 connectResult.setVisibility(View.VISIBLE);
                 performConnection();
-            }else {
+            } else {
                 Toast.makeText(getContext(), "disconnection in progress...", Toast.LENGTH_SHORT).show();
                 if (mService != null) {
                     mService.disconnectDevice();
@@ -111,22 +117,25 @@ public class DeviceInfoFragment extends Fragment implements
 
     private void initializeSensorsArrayList() {
         sensorsList = new ArrayList<>();
-        for (Field field: StringConstants.class.getDeclaredFields()){
+        for (Field field : StringConstants.class.getDeclaredFields()) {
             try {
 
                 String uuid = Objects.requireNonNull(field.get(StringConstants.class)).toString();
-                if (!StringConstants.kServiceMainUUID.equalsIgnoreCase(uuid ) &&
+                if (!StringConstants.kServiceMainUUID.equalsIgnoreCase(uuid) &&
                         !StringConstants.kSensorList.equalsIgnoreCase(uuid) &&
                         !uuid.equals(StringConstants.kUUIDScaleBLESensor) &&
                         !uuid.equals(StringConstants.kUUIDBloodPressureBLESensor) &&
-                        !uuid.equals(StringConstants.kUUIDPulsiOximeterBLESensor)&&
+                        !uuid.equals(StringConstants.kUUIDPulsiOximeterBLESensor) &&
                         !uuid.equals(StringConstants.kUUIDGlucometerBLESensor) &&
                         !uuid.equals(StringConstants.kUUIDEEGSensor)) {
                     LBSensorObject object = LBSensorObject.newInstance();
                     LBSensorObject.preloadValues(object);
-                    object.uuidString = uuid;
+
+                    //object.tag = field.getInt(field);
                     object.tickStatus = true;
+                    object.uuidString = uuid;
                     object.bluetooth_mode = LBSensorObject.BluetoothMode.BLUETOOTH_MODE_REAL_TIME;
+                    LBSensorObject.preloadValues(object);
                     sensorsList.add(object);
                 }
 
@@ -162,7 +171,7 @@ public class DeviceInfoFragment extends Fragment implements
         if (mService.connectToDevice(device, getContext())) {
             Log.d("DEBUG", "Device connected!!");
             handler.postDelayed(postExecution, 2000);
-        }else {
+        } else {
             connectResult.setText("Connection failed");
         }
     }
@@ -186,17 +195,20 @@ public class DeviceInfoFragment extends Fragment implements
 
     @Override
     public void onConnectedToDevice(BluetoothDevice bluetoothDevice, int i) {
-
         isConnected = true;
         connectResult.setText("Connection success");
         connectBtn.setText("Disconnect");
+        //notifyCharacteristics.clear();
     }
 
     @Override
     public void onServicesFound(List<BluetoothGattService> services) {
-
-        for (BluetoothGattService service: services) {
+        connectResult.setText("onServicesFound::" + services.size());
+        for (BluetoothGattService service : services) {
             if (service.getUuid().toString().equalsIgnoreCase(StringConstants.kServiceMainUUID)) {
+                //
+
+                List<BluetoothGattCharacteristic> characteristics = service.getCharacteristics();
                 BitManager bitManager = BitManager.newObject();
                 bitManager.objectByte = BitManager.createByteObjectFromSensors(
                         sensorsList, BitManager.BLUETOOTH_DISPLAY_MODE.BLUETOOTH_DISPLAY_MODE_GENERAL, getContext());
@@ -205,16 +217,15 @@ public class DeviceInfoFragment extends Fragment implements
                 String hexByte = Utils.toHexString(data);
                 Log.d("DEBUG onCharaFound", "hex dataString value: " + hexByte);
                 Log.d("DEBUG onCharaFound", "dataString: " + dataString);
-                for (LBSensorObject sensor: sensorsList) {
-                    for (BluetoothGattCharacteristic characteristic: service.getCharacteristics()) {
+                for (LBSensorObject sensor : sensorsList) {
+                    for (BluetoothGattCharacteristic characteristic : characteristics) {
                         if (sensor.uuidString.equalsIgnoreCase(characteristic.getUuid().toString()) && sensor.tickStatus) {
                             mService.writeCharacteristicQueue(characteristic, data);
-                            mService.writeCharacteristicSubscription(characteristic,true);
+                            mService.writeCharacteristicSubscription(characteristic, true);
                         }
                     }
                 }
-
-                mService.readCharacteristicsForService(service);
+                //mService.readCharacteristicsForService(service);
             }
         }
     }
@@ -224,6 +235,7 @@ public class DeviceInfoFragment extends Fragment implements
         isConnected = false;
         connectResult.setText("device disconnected");
         connectBtn.setText("Connect");
+        //mService.close();
     }
 
     @Override
@@ -236,10 +248,19 @@ public class DeviceInfoFragment extends Fragment implements
     @Override
     public void onCharacteristicsFound(List<BluetoothGattCharacteristic> characteristics, BluetoothGattService bluetoothGattService) {
         connectResult.setText("onCharacteristicsFound");
+
         /*
         if (bluetoothGattService.getUuid().toString().equalsIgnoreCase(StringConstants.kServiceMainUUID)) {
             for (BluetoothGattCharacteristic characteristic : characteristics) {
-                mService.writeCharacteristicSubscription(characteristic,true);
+                for (LBSensorObject sensor : sensorsList) {
+                    if (sensor.uuidString.equalsIgnoreCase(characteristic.getUuid().toString()) && sensor.tickStatus) {
+                        //byte[] data = characteristic.getValue();
+                        if (!notifyCharacteristics.contains(characteristic)) {
+                            notifyCharacteristics.add(characteristic);
+                            mService.writeCharacteristicSubscription(characteristic, true);
+                        }
+                    }
+                }
             }
         }
 
@@ -255,18 +276,113 @@ public class DeviceInfoFragment extends Fragment implements
             if (value == null) {
                 return;
             }
-            if (uuid.equals(StringConstants.kUUIDBodyPositionSensor)) {
-                HashMap<String, String> dataDict = LBValueConverter.
-                        manageValuePosition(value);
-                Log.d("DEBUG", "kUUIDBodyPositionSensor dict: " + dataDict);
+            for (LBSensorObject sensorObject : sensorsList) {
+                if (uuid.equalsIgnoreCase(sensorObject.uuidString)) {
+
+                    if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDBodyPositionSensor)) {
+                        HashMap<String, String> dataDict = LBValueConverter.manageValuePosition(value);
+                        Log.d("DEBUG", "kUUIDBodyPositionSensor dict: " + dataDict);
+                        String position = (dataDict.get("0"));
+                        assert position != null;
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, position));
+                    }
+                    if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDTemperatureSensor)) {
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueTemperature(value);
+                        Log.d("DEBUG", "kUUIDBodyPositionSensor dict: " + dataDict);
+                        String position = (dataDict.get("0"));
+                        assert position != null;
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, position));
+                    }
+                    if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDEMGSensor)) {
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueElectromyography(value);
+                        Log.d("DEBUG", "kUUIDBodyPositionSensor dict: " + dataDict);
+                        String position = (dataDict.get("0"));
+                        assert position != null;
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, position));
+                    }
+                    if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDECGSensor)) {
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueElectrocardiography(value);
+                        Log.d("DEBUG", "kUUIDBodyPositionSensor dict: " + dataDict);
+                        String position = (dataDict.get("0"));
+                        assert position != null;
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, position));
+                    }
+                    if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDAirflowSensor)) {
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueAirflow(value);
+                        Log.d("DEBUG", "kUUIDBodyPositionSensor dict: " + dataDict);
+                        String position = (dataDict.get("0"));
+                        assert position != null;
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, position));
+                    }
+                    if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDGSRSensor)) {
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueGSR(value);
+                        Log.d("DEBUG", "kUUIDBodyPositionSensor dict: " + dataDict);
+                        String position = (dataDict.get("0"));
+                        assert position != null;
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, position));
+                    }
+                    if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDBloodPressureSensor)) {
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueBloodPressure(value);
+                        Log.d("DEBUG", "kUUIDBodyPositionSensor dict: " + dataDict);
+                        String position = (dataDict.get("0"));
+                        assert position != null;
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, position));
+                    }
+                    if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDPulsiOximeterSensor)) {
+                        HashMap<String, String> dataDict = LBValueConverter.manageValuePulsiOximeter(value);
+                        Log.d("DEBUG", "kUUIDBodyPositionSensor dict: " + dataDict);
+                        String position = (dataDict.get("0"));
+                        assert position != null;
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, position));
+                    }
+                    if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDGlucometerSensor)) {
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueGlucometer(value);
+                        Log.d("DEBUG", "kUUIDBodyPositionSensor dict: " + dataDict);
+                        String position = (dataDict.get("0"));
+                        assert position != null;
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, position));
+                    }
+                    if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDSpirometerSensor)) {
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueSpirometer(value);
+                        Log.d("DEBUG", "kUUIDBodyPositionSensor dict: " + dataDict);
+                        String position = (dataDict.get("0"));
+                        assert position != null;
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, position));
+                    }
+                    if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDSnoreSensor)) {
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueSnore(value);
+                        Log.d("DEBUG", "kUUIDBodyPositionSensor dict: " + dataDict);
+                        String position = (dataDict.get("0"));
+                        assert position != null;
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, position));
+                    }
+                }
+
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    class MyRunnable implements Runnable {
+        private final LBSensorObject sensor;
+        private final String value;
+
+        public MyRunnable(LBSensorObject sensor, String value) {
+            this.sensor = sensor;
+            this.value = value;
+        }
+
+        @Override
+        public void run() {
+            Log.d("NEW VALUE", "Value: " + value);
+            sensorAdapter.updateValue(sensor, Float.parseFloat(value));
+        }
+    }
+
     @Override
     public void onCharacteristicSubscribed(BluetoothGattCharacteristic bluetoothGattCharacteristic, boolean b) {
+        connectResult.setText("onCharacteristicSubscribed");
         Toast.makeText(getContext(), "Test", Toast.LENGTH_SHORT).show();
     }
 

@@ -32,6 +32,7 @@ import com.libelium.mysignalsconnectkit.BluetoothManagerHelper;
 import com.libelium.mysignalsconnectkit.callbacks.BluetoothManagerHelperCallback;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 @SuppressLint("MissingPermission")
@@ -56,6 +57,7 @@ public class HomeFragment extends Fragment implements
     private Button stopScanBtn;
     private RecyclerView devicesListRecyclerView;
     private TextView scanResult;
+
 
     @SuppressLint("SetTextI18n")
     @Nullable
@@ -197,7 +199,6 @@ public class HomeFragment extends Fragment implements
                 scanResult.setText(name +"::" + bluetoothDeviceList.size());
             }
         }
-        //bluetoothManager.stopLeScan();
     }
 
     @Override
@@ -212,6 +213,7 @@ public class HomeFragment extends Fragment implements
         // Ouvrez le fragment DeviceFragmentInfo et transmettez les informations du dispositif
         DeviceInfoFragment deviceInfoFragment = new DeviceInfoFragment();
         deviceInfoFragment.setDevice(device);
+
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, deviceInfoFragment);

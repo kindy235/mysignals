@@ -36,6 +36,8 @@ import com.libelium.mysignalsconnectkit.utils.Utils;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 @SuppressLint("SetTextI18n")
 public class DeviceInfoFragment extends Fragment implements
@@ -43,9 +45,16 @@ public class DeviceInfoFragment extends Fragment implements
         BluetoothManagerCharacteristicsCallback,
         BluetoothManagerQueueCallback {
 
-    private BluetoothManagerService mService;
-    private ArrayList<LBSensorObject> sensorsList;
+    @SuppressLint("StaticFieldLeak")
+    private static BluetoothManagerService mService = null;
+
+    private BluetoothGattService selectedService;
+    private ArrayList<LBSensorObject> selectedSensors;
     private ArrayList<BluetoothGattCharacteristic> notifyCharacteristics;
+    private boolean writtenService;
+    private BluetoothGattCharacteristic characteristicSensorList;
+
+    private Timer timerRssi;
     private SensorAdapter sensorAdapter;
     private RecyclerView sensorsRecyclerView;
     private BluetoothDevice device;
@@ -71,22 +80,12 @@ public class DeviceInfoFragment extends Fragment implements
         connectResult = binding.getRoot().findViewById(R.id.connect_result);
 
         sensorsRecyclerView = binding.getRoot().findViewById(R.id.sensors_recycler_view);
-        //sensorsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        sensorsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        sensorsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        //sensorsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         notifyCharacteristics = new ArrayList<>();
-        /*
-        sensorsList = new ArrayList<>();
-        LBSensorObject object = LBSensorObject.newInstance();
-        object.tag = 1;
-        object.tickStatus = true;
-        object.uuidString = StringConstants.kUUIDBodyPositionSensor;
-        LBSensorObject.preloadValues(object);
-        object.bluetooth_mode = LBSensorObject.BluetoothMode.BLUETOOTH_MODE_REAL_TIME;
-        sensorsList.add(object);
-
-         */
-        initializeSensorsArrayList();
-        sensorAdapter = new SensorAdapter(sensorsList);
+        selectedSensors = createSensorsDisplay();
+        //initializeSensorsArrayList();
+        sensorAdapter = new SensorAdapter(selectedSensors);
         sensorsRecyclerView.setAdapter(sensorAdapter);
 
         try {
@@ -114,9 +113,10 @@ public class DeviceInfoFragment extends Fragment implements
 
         return binding.getRoot();
     }
-
+    /*
     private void initializeSensorsArrayList() {
         sensorsList = new ArrayList<>();
+        int count = 1;
         for (Field field : StringConstants.class.getDeclaredFields()) {
             try {
 
@@ -128,15 +128,15 @@ public class DeviceInfoFragment extends Fragment implements
                         !uuid.equals(StringConstants.kUUIDPulsiOximeterBLESensor) &&
                         !uuid.equals(StringConstants.kUUIDGlucometerBLESensor) &&
                         !uuid.equals(StringConstants.kUUIDEEGSensor)) {
-                    LBSensorObject object = LBSensorObject.newInstance();
-                    LBSensorObject.preloadValues(object);
 
-                    //object.tag = field.getInt(field);
+                    LBSensorObject object = LBSensorObject.newInstance();
+                    object.tag = count;
                     object.tickStatus = true;
                     object.uuidString = uuid;
                     object.bluetooth_mode = LBSensorObject.BluetoothMode.BLUETOOTH_MODE_REAL_TIME;
                     LBSensorObject.preloadValues(object);
                     sensorsList.add(object);
+                    count++;
                 }
 
             } catch (IllegalAccessException e) {
@@ -144,6 +144,116 @@ public class DeviceInfoFragment extends Fragment implements
             }
         }
     }
+     */
+
+    private ArrayList<LBSensorObject> createSensorsDisplay() {
+
+        int maxNotifications = Utils.getMaxNotificationNumber();
+
+        ArrayList<LBSensorObject> sensors = new ArrayList<>();
+
+        LBSensorObject object = LBSensorObject.newInstance();
+
+        object.tag = 1;
+        object.tickStatus = true;
+        object.uuidString = StringConstants.kUUIDBodyPositionSensor;
+
+        LBSensorObject.preloadValues(object);
+        sensors.add(object);
+
+        object = LBSensorObject.newInstance();
+
+        object.tag = 2;
+        object.tickStatus = true;
+        object.uuidString = StringConstants.kUUIDTemperatureSensor;
+
+        LBSensorObject.preloadValues(object);
+        sensors.add(object);
+
+        object = LBSensorObject.newInstance();
+
+        object.tag = 3;
+        object.tickStatus = true;
+        object.uuidString = StringConstants.kUUIDEMGSensor;
+
+        LBSensorObject.preloadValues(object);
+        sensors.add(object);
+
+        object = LBSensorObject.newInstance();
+
+        object.tag = 4;
+        object.tickStatus = true;
+        object.uuidString = StringConstants.kUUIDECGSensor;
+
+        LBSensorObject.preloadValues(object);
+        sensors.add(object);
+
+        object = LBSensorObject.newInstance();
+
+        object.tag = 5;
+        object.tickStatus = maxNotifications > 4;
+        object.uuidString = StringConstants.kUUIDAirflowSensor;
+
+        LBSensorObject.preloadValues(object);
+        sensors.add(object);
+
+        object = LBSensorObject.newInstance();
+
+        object.tag = 6;
+        object.tickStatus = maxNotifications > 4;
+        object.uuidString = StringConstants.kUUIDGSRSensor;
+
+        LBSensorObject.preloadValues(object);
+        sensors.add(object);
+
+        object = LBSensorObject.newInstance();
+
+        object.tag = 7;
+        object.tickStatus = maxNotifications > 4;
+        object.uuidString = StringConstants.kUUIDBloodPressureSensor;
+
+        LBSensorObject.preloadValues(object);
+        sensors.add(object);
+
+        object = LBSensorObject.newInstance();
+
+        object.tag = 8;
+        object.tickStatus = maxNotifications > 7;
+        object.uuidString = StringConstants.kUUIDPulsiOximeterSensor;
+
+        LBSensorObject.preloadValues(object);
+        sensors.add(object);
+
+        object = LBSensorObject.newInstance();
+
+        object.tag = 9;
+        object.tickStatus = maxNotifications > 7;
+        object.uuidString = StringConstants.kUUIDGlucometerSensor;
+
+        LBSensorObject.preloadValues(object);
+        sensors.add(object);
+
+        object = LBSensorObject.newInstance();
+
+        object.tag = 10;
+        object.tickStatus = maxNotifications > 7;
+        object.uuidString = StringConstants.kUUIDSpirometerSensor;
+
+        LBSensorObject.preloadValues(object);
+        sensors.add(object);
+
+        object = LBSensorObject.newInstance();
+
+        object.tag = 11;
+        object.tickStatus = maxNotifications > 7;
+        object.uuidString = StringConstants.kUUIDSnoreSensor;
+
+        LBSensorObject.preloadValues(object);
+        sensors.add(object);
+
+        return sensors;
+    }
+
 
     public void setDevice(BluetoothDevice device) {
         this.device = device;
@@ -152,6 +262,7 @@ public class DeviceInfoFragment extends Fragment implements
 
     private void performConnection() {
         final Handler handler = new Handler();
+
         final Runnable postExecution = () -> {
             try {
                 if (mService != null) {
@@ -174,6 +285,69 @@ public class DeviceInfoFragment extends Fragment implements
         } else {
             connectResult.setText("Connection failed");
         }
+    }
+
+    /*
+    private void performConnection() {
+        Executor executor = Executors.newSingleThreadExecutor();
+
+        final Runnable postExecution = () -> {
+            try {
+                if (mService != null) {
+                    if (mService.discoverServices()) {
+                        Log.d("DEBUG", "Device discoverServices: " + device.getAddress());
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+        };
+
+        if (mService.startBonding(device)) {
+            Toast.makeText(getContext(), "Bonding starting...", Toast.LENGTH_SHORT).show();
+            Log.d("DEBUG", "Bonding starting...");
+        }
+
+        if (mService.connectToDevice(device, getContext())) {
+            Log.d("DEBUG", "Device connected!!");
+            executor.execute(() -> {
+                try {
+                    Thread.sleep(2000);
+                    postExecution.run();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        } else {
+            connectResult.setText("Connection failed");
+        }
+    }
+
+     */
+
+    /**
+     * Scheduler method to update and query RSSI value
+     */
+    private void scheduleRSSIReader() {
+
+        if (timerRssi != null) {
+
+            timerRssi.cancel();
+            timerRssi.purge();
+            timerRssi = null;
+        }
+
+        timerRssi = new Timer();
+        timerRssi.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+
+                if (mService != null) {
+
+                    mService.readRemoteRSSI();
+                }
+            }
+        }, 1000, 1000);
     }
 
     // BluetoothManagerServicesCallback
@@ -203,29 +377,24 @@ public class DeviceInfoFragment extends Fragment implements
 
     @Override
     public void onServicesFound(List<BluetoothGattService> services) {
-        connectResult.setText("onServicesFound::" + services.size());
-        for (BluetoothGattService service : services) {
-            if (service.getUuid().toString().equalsIgnoreCase(StringConstants.kServiceMainUUID)) {
-                //
 
-                List<BluetoothGattCharacteristic> characteristics = service.getCharacteristics();
-                BitManager bitManager = BitManager.newObject();
-                bitManager.objectByte = BitManager.createByteObjectFromSensors(
-                        sensorsList, BitManager.BLUETOOTH_DISPLAY_MODE.BLUETOOTH_DISPLAY_MODE_GENERAL, getContext());
-                byte[] data = BitManager.convertToData(bitManager.objectByte);
-                String dataString = Arrays.toString(data);
-                String hexByte = Utils.toHexString(data);
-                Log.d("DEBUG onCharaFound", "hex dataString value: " + hexByte);
-                Log.d("DEBUG onCharaFound", "dataString: " + dataString);
-                for (LBSensorObject sensor : sensorsList) {
-                    for (BluetoothGattCharacteristic characteristic : characteristics) {
-                        if (sensor.uuidString.equalsIgnoreCase(characteristic.getUuid().toString()) && sensor.tickStatus) {
-                            mService.writeCharacteristicQueue(characteristic, data);
-                            mService.writeCharacteristicSubscription(characteristic, true);
-                        }
-                    }
+        if (services != null) {
+
+            selectedService = null;
+
+            for (BluetoothGattService service : services) {
+
+                String uuidService = service.getUuid().toString().toUpperCase();
+
+                if (uuidService.equals(StringConstants.kServiceMainUUID)) {
+                    selectedService = service;
+                    break;
                 }
-                //mService.readCharacteristicsForService(service);
+            }
+
+            if (selectedService != null) {
+                writtenService = false;
+                mService.readCharacteristicsForService(selectedService);
             }
         }
     }
@@ -240,43 +409,70 @@ public class DeviceInfoFragment extends Fragment implements
 
     @Override
     public void onReadRemoteRssi(int i, int i1) {
-
+        Log.d("DEBUG", "RSSI: " + i + " dBm - Status: " + i1);
     }
 
     //BluetoothManagerCharacteristicsCallback
 
     @Override
-    public void onCharacteristicsFound(List<BluetoothGattCharacteristic> characteristics, BluetoothGattService bluetoothGattService) {
-        connectResult.setText("onCharacteristicsFound");
+    public void onCharacteristicsFound(List<BluetoothGattCharacteristic> characteristics, BluetoothGattService service) {
+        //connectResult.setText("onCharacteristicsFound");
+        if (service.getUuid().toString().toUpperCase().equals(StringConstants.kServiceMainUUID)) {
 
-        /*
-        if (bluetoothGattService.getUuid().toString().equalsIgnoreCase(StringConstants.kServiceMainUUID)) {
-            for (BluetoothGattCharacteristic characteristic : characteristics) {
-                for (LBSensorObject sensor : sensorsList) {
-                    if (sensor.uuidString.equalsIgnoreCase(characteristic.getUuid().toString()) && sensor.tickStatus) {
-                        //byte[] data = characteristic.getValue();
-                        if (!notifyCharacteristics.contains(characteristic)) {
-                            notifyCharacteristics.add(characteristic);
-                            mService.writeCharacteristicSubscription(characteristic, true);
-                        }
+            if (!writtenService) {
+
+                characteristicSensorList = null;
+                writtenService = true;
+
+                for (BluetoothGattCharacteristic characteristic : characteristics) {
+
+                    String uuid = characteristic.getUuid().toString().toUpperCase();
+
+                    if (characteristic.getUuid().toString().toUpperCase().equals(StringConstants.kSensorList)) {
+
+                        Log.d("DEBUG", "characteristic: " + uuid);
+                        Log.d("DEBUG", "characteristic uuid: " + characteristic.getUuid().toString().toUpperCase());
+                        Log.d("DEBUG", "characteristic getWriteType: " + characteristic.getWriteType());
+
+                        characteristicSensorList = characteristic;
+
+                        break;
                     }
+                }
+
+                if (characteristicSensorList != null) {
+
+                    BitManager bitManager = BitManager.newObject();
+                    bitManager.objectByte = BitManager.createByteObjectFromSensors(selectedSensors, BitManager.BLUETOOTH_DISPLAY_MODE.BLUETOOTH_DISPLAY_MODE_GENERAL, getContext());
+
+                    byte[] data = BitManager.convertToData(bitManager.objectByte);
+
+                    String dataString = Arrays.toString(data);
+                    String hexByte = Utils.toHexString(data);
+
+                    Log.d("DEBUG", "hex dataString value: " + hexByte);
+                    Log.d("DEBUG", "dataString: " + dataString);
+
+                    mService.writeCharacteristicQueue(characteristicSensorList, data);
+
+                    Log.d("DEBUG", "Writing characteristic: " + characteristicSensorList.getUuid().toString().toUpperCase());
                 }
             }
         }
-
-         */
     }
 
     @Override
-    public void onCharacteristicChanged(BluetoothGattCharacteristic bluetoothGattCharacteristic) {
-        connectResult.setText("onCharacteristicChanged");
+    public void onCharacteristicChanged(BluetoothGattCharacteristic characteristic) {
+        //connectResult.setText("onCharacteristicChanged");
+        readCharacteristic(characteristic);
+        /*
         try {
             String uuid = bluetoothGattCharacteristic.getUuid().toString().toUpperCase();
             byte[] value = bluetoothGattCharacteristic.getValue();
             if (value == null) {
                 return;
             }
-            for (LBSensorObject sensorObject : sensorsList) {
+            for (LBSensorObject sensorObject : selectedSensors) {
                 if (uuid.equalsIgnoreCase(sensorObject.uuidString)) {
 
                     if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDBodyPositionSensor)) {
@@ -362,6 +558,296 @@ public class DeviceInfoFragment extends Fragment implements
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+         */
+    }
+
+    @Override
+    public void onCharacteristicSubscribed(BluetoothGattCharacteristic bluetoothGattCharacteristic, boolean b) {
+        //connectResult.setText("onCharacteristicSubscribed");
+        if (b) {
+
+            Log.d("DEBUG", "unsubscribed from characteristic!!");
+        } else {
+
+            Log.d("DEBUG", "subscribed to characteristic!!");
+        }
+    }
+
+    @Override
+    public void onCharacteristicWritten(BluetoothGattCharacteristic bluetoothGattCharacteristic, int i) {
+        //connectResult.setText("onCharacteristicWritten");
+    }
+
+    @Override
+    public void onFinishWriteAllCharacteristics() {
+        //connectResult.setText("onFinishWriteAllCharacteristics");
+    }
+
+    @Override
+    public void onStartWriteCharacteristic(BluetoothGattCharacteristic characteristic, int status) {
+        //connectResult.setText("onStartWriteCharacteristic");
+        if (status != BluetoothGatt.GATT_SUCCESS) {
+
+            Log.d("DEBUG", "writing characteristic error: " + status + " - " + characteristic.getUuid().toString().toUpperCase());
+        } else {
+
+            String uuid = characteristic.getService().getUuid().toString().toUpperCase();
+
+            if (uuid.equals(StringConstants.kServiceMainUUID)) {
+
+                Log.d("DEBUG", "pasa aquiasdadds");
+
+                for (BluetoothGattCharacteristic charac : notifyCharacteristics) {
+
+                    mService.writeCharacteristicSubscription(charac, false);
+                }
+
+                notifyCharacteristics.clear();
+
+                for (BluetoothGattCharacteristic charac : selectedService.getCharacteristics()) {
+
+                    for (LBSensorObject sensor : selectedSensors) {
+
+                        if (sensor.uuidString.equalsIgnoreCase(charac.getUuid().toString()) && sensor.tickStatus) {
+
+                            notifyCharacteristics.add(charac);
+
+                            mService.writeCharacteristicSubscription(charac, true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // BluetoothManagerQueueCallback
+    @Override
+    public void onStartWriteQueueDescriptor(BluetoothGattDescriptor bluetoothGattDescriptor) {
+        //connectResult.setText("onStartWriteQueueDescriptor");
+    }
+
+    @Override
+    public void onStartReadCharacteristic(BluetoothGattCharacteristic bluetoothGattCharacteristic) {
+        //connectResult.setText("onStartReadCharacteristic");
+    }
+
+
+    @Override
+    public void onFinishWriteAllDescriptors() {
+        //connectResult.setText("onFinishWriteAllDescriptors");
+        if (characteristicSensorList != null) {
+
+            BitManager bitManager = BitManager.newObject();
+            bitManager.objectByte = BitManager.createByteObjectFromSensors(selectedSensors, BitManager.BLUETOOTH_DISPLAY_MODE.BLUETOOTH_DISPLAY_MODE_GENERAL, getContext());
+
+            byte[] data = BitManager.convertToData(bitManager.objectByte);
+
+            String dataString = Arrays.toString(data);
+            String hexByte = Utils.toHexString(data);
+
+            Log.d("DEBUG", "hex dataString value: " + hexByte);
+            Log.d("DEBUG", "dataString: " + dataString);
+
+            mService.writeCharacteristicQueue(characteristicSensorList, data);
+
+            Log.d("DEBUG", "Writing characteristic: " + characteristicSensorList.getUuid().toString().toUpperCase());
+        }
+    }
+
+    @Override
+    public void onFinishReadAllCharacteristics() {
+        //connectResult.setText("onFinishReadAllCharacteristics");
+    }
+
+    @Override
+    public void onCharacteristicChangedQueue(BluetoothGattCharacteristic bluetoothGattCharacteristic) {
+        //connectResult.setText("onCharacteristicChangedQueue");
+    }
+
+    /**
+     * Manages and parse values from notified characteristic.
+     *
+     * @param characteristic Notified characteristic
+     */
+    private void readCharacteristic(BluetoothGattCharacteristic characteristic) {
+
+        try {
+
+            String uuid = characteristic.getUuid().toString().toUpperCase();
+
+            byte[] value = characteristic.getValue();
+
+            if (value == null) {
+
+                return;
+            }
+
+            for (LBSensorObject sensorObject : selectedSensors) {
+                if (uuid.equalsIgnoreCase(sensorObject.uuidString)) {
+                    if (uuid.equals(StringConstants.kUUIDBodyPositionSensor)) {
+
+                        HashMap<String, String> dataDict = LBValueConverter.manageValuePosition(value);
+
+                        Log.d("DEBUG", "kUUIDBodyPositionSensor dict: " + dataDict);
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, dataDict.get("0")));
+                    }
+
+                    if (uuid.equals(StringConstants.kUUIDTemperatureSensor)) {
+
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueTemperature(value);
+
+                        Log.d("DEBUG", "kUUIDTemperatureSensor dict: " + dataDict);
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, dataDict.get("0")));
+                    }
+
+                    if (uuid.equals(StringConstants.kUUIDEMGSensor)) {
+
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueElectromyography(value);
+
+                        Log.d("DEBUG", "kUUIDEMGSensor dict: " + dataDict);
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, dataDict.get("0")));
+                    }
+
+                    if (uuid.equals(StringConstants.kUUIDECGSensor)) {
+
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueElectrocardiography(value);
+
+                        Log.d("DEBUG", "kUUIDECGSensor dict: " + dataDict);
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, dataDict.get("0")));
+                    }
+
+                    if (uuid.equals(StringConstants.kUUIDAirflowSensor)) {
+
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueAirflow(value);
+
+                        Log.d("DEBUG", "kUUIDAirflowSensor dict: " + dataDict);
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, dataDict.get("0")));
+                    }
+
+                    if (uuid.equals(StringConstants.kUUIDGSRSensor)) {
+
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueGSR(value);
+
+                        Log.d("DEBUG", "kUUIDGSRSensor dict: " + dataDict);
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, dataDict.get("0")));
+                    }
+
+                    if (uuid.equals(StringConstants.kUUIDBloodPressureSensor) || uuid.equals(StringConstants.kUUIDBloodPressureBLESensor)) {
+
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueBloodPressure(value);
+
+                        if (uuid.equals(StringConstants.kUUIDBloodPressureSensor)) {
+
+                            Log.d("DEBUG", "kUUIDBloodPressureSensor dict: " + dataDict);
+                        }
+
+                        if (uuid.equals(StringConstants.kUUIDBloodPressureBLESensor)) {
+
+                            Log.d("DEBUG", "kUUIDBloodPressureBLESensor dict: " + dataDict);
+                        }
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, dataDict.get("0")));
+                    }
+
+                    if (uuid.equals(StringConstants.kUUIDPulsiOximeterSensor) || uuid.equals(StringConstants.kUUIDPulsiOximeterBLESensor)) {
+
+                        HashMap<String, String> dataDict = LBValueConverter.manageValuePulsiOximeter(value);
+
+                        if (uuid.equals(StringConstants.kUUIDPulsiOximeterSensor)) {
+
+                            Log.d("DEBUG", "kUUIDPulsiOximeterSensor dict: " + dataDict);
+                        }
+
+                        if (uuid.equals(StringConstants.kUUIDPulsiOximeterBLESensor)) {
+
+                            Log.d("DEBUG", "kUUIDPulsiOximeterBLESensor dict: " + dataDict);
+                        }
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, dataDict.get("0")));
+                    }
+
+                    if (uuid.equals(StringConstants.kUUIDGlucometerSensor) || uuid.equals(StringConstants.kUUIDGlucometerBLESensor)) {
+
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueGlucometer(value);
+
+                        if (uuid.equals(StringConstants.kUUIDGlucometerSensor)) {
+
+                            Log.d("DEBUG", "kUUIDGlucometerSensor dict: " + dataDict);
+                        } else {
+
+                            Log.d("DEBUG", "kUUIDGlucometerBLESensor dict: " + dataDict);
+                        }
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, dataDict.get("0")));
+                    }
+
+                    if (uuid.equals(StringConstants.kUUIDSpirometerSensor)) {
+
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueSpirometer(value);
+
+                        Log.d("DEBUG", "kUUIDSpirometerSensor dict: " + dataDict);
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, dataDict.get("0")));
+                    }
+
+                    if (uuid.equals(StringConstants.kUUIDSnoreSensor)) {
+
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueSnore(value);
+
+                        Log.d("DEBUG", "kUUIDSnoreSensor dict: " + dataDict);
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, dataDict.get("0")));
+                    }
+
+                    if (uuid.equals(StringConstants.kUUIDScaleBLESensor)) {
+
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueScale(value);
+
+                        Log.d("DEBUG", "kUUIDScaleBLESensor dict: " + dataDict);
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, dataDict.get("0")));
+                    }
+
+                    if (uuid.equals(StringConstants.kUUIDEEGSensor)) {
+
+                        HashMap<String, String> dataDict = LBValueConverter.manageValueElectroencephalography(value);
+
+                        Log.d("DEBUG", "kUUIDEEGSensor dict: " + dataDict);
+                        requireActivity().runOnUiThread(new MyRunnable(sensorObject, dataDict.get("0")));
+                    }
+                }
+            }
+
+        } catch (Exception ignored) {
+
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+
+        if (timerRssi != null) {
+
+            timerRssi.cancel();
+            timerRssi.purge();
+            timerRssi = null;
+        }
+
+        try {
+
+            mService.unregisterBondNotification();
+        } catch (Exception ignored) {
+
+        }
+
+        try {
+
+            if (mService != null) {
+
+                mService.disconnectDevice();
+                mService.serviceDestroy();
+                mService.close();
+                mService = null;
+            }
+        } catch (Exception ignored) {
+
+        }
+        super.onDestroy();
     }
 
     class MyRunnable implements Runnable {
@@ -379,55 +865,4 @@ public class DeviceInfoFragment extends Fragment implements
             sensorAdapter.updateValue(sensor, Float.parseFloat(value));
         }
     }
-
-    @Override
-    public void onCharacteristicSubscribed(BluetoothGattCharacteristic bluetoothGattCharacteristic, boolean b) {
-        connectResult.setText("onCharacteristicSubscribed");
-        Toast.makeText(getContext(), "Test", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onCharacteristicWritten(BluetoothGattCharacteristic bluetoothGattCharacteristic, int i) {
-        Toast.makeText(getContext(), "Test", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onFinishWriteAllCharacteristics() {
-        Toast.makeText(getContext(), "Test", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onStartWriteCharacteristic(BluetoothGattCharacteristic bluetoothGattCharacteristic, int i) {
-        byte[] b = bluetoothGattCharacteristic.getValue();
-        Toast.makeText(getContext(), "Test", Toast.LENGTH_SHORT).show();
-    }
-
-    // BluetoothManagerQueueCallback
-    @Override
-    public void onStartWriteQueueDescriptor(BluetoothGattDescriptor bluetoothGattDescriptor) {
-        Toast.makeText(getContext(), "Test", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onStartReadCharacteristic(BluetoothGattCharacteristic bluetoothGattCharacteristic) {
-        byte[] b = bluetoothGattCharacteristic.getValue();
-        Toast.makeText(getContext(), "Test", Toast.LENGTH_SHORT).show();
-    }
-
-
-    @Override
-    public void onFinishWriteAllDescriptors() {
-        Toast.makeText(getContext(), "Test", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onFinishReadAllCharacteristics() {
-        Toast.makeText(getContext(), "Test", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onCharacteristicChangedQueue(BluetoothGattCharacteristic bluetoothGattCharacteristic) {
-        Toast.makeText(getContext(), "Test", Toast.LENGTH_SHORT).show();
-    }
-
 }

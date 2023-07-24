@@ -1,7 +1,11 @@
 package com.example.mysignalsapp.viewmodel;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
+import com.example.mysignalsapp.R;
 import com.example.mysignalsapp.utils.SensorType;
 import com.libelium.mysignalsconnectkit.pojo.LBSensorObject;
 import com.libelium.mysignalsconnectkit.utils.StringConstants;
@@ -74,56 +78,104 @@ public class SensorViewModel extends BaseObservable {
         return sensorValue;
     }
 
-    @Bindable
-    public String getSensorType() {
+    public SensorType getSensorType() {
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDBodyPositionSensor)) {
-            return SensorType.POSITION.name();
+            return SensorType.POSITION;
         }
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDTemperatureSensor)) {
-            return SensorType.TEMP.name();
+            return SensorType.TEMP;
         }
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDEMGSensor)) {
-            return SensorType.EMG.name();
+            return SensorType.EMG;
         }
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDECGSensor)) {
-            return SensorType.ECG.name();
+            return SensorType.ECG;
         }
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDAirflowSensor)) {
-            return SensorType.AIRFLOW.name();
+            return SensorType.AIRFLOW;
         }
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDGSRSensor)) {
-            return SensorType.GSR.name();
+            return SensorType.GSR;
         }
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDBloodPressureSensor)) {
-            return SensorType.BLOOD.name();
+            return SensorType.BLOOD;
         }
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDPulsiOximeterSensor)) {
-            return SensorType.SPO2.name();
+            return SensorType.SPO2;
         }
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDGlucometerSensor)) {
-            return SensorType.GLUCO.name();
+            return SensorType.GLUCO;
         }
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDSpirometerSensor)) {
-            return SensorType.SPIR.name();
+            return SensorType.SPIR;
         }
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDSnoreSensor)) {
-            return SensorType.SNORE.name();
+            return SensorType.SNORE;
         }
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDScaleBLESensor)) {
-            return SensorType.SCALE.name();
+            return SensorType.SCALE;
         }
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDBloodPressureBLESensor)) {
-            return SensorType.BLOOD.name();
+            return SensorType.BLOOD;
         }
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDPulsiOximeterBLESensor)) {
-            return SensorType.SPO2.name();
+            return SensorType.SPO2;
         }
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDGlucometerBLESensor)) {
-            return SensorType.GLUCO.name();
+            return SensorType.GLUCO;
         }
         if (sensorObject.uuidString.equalsIgnoreCase(StringConstants.kUUIDEEGSensor)) {
-            return SensorType.EEG.name();
+            return SensorType.EEG;
         }
-        return SensorType.UNKNOWN.name();
+        return SensorType.UNKNOWN;
+    }
+
+    @Bindable
+    public String getType(){
+       return getSensorType().name();
+    }
+
+    public Drawable getImage(Context context, int res) {
+
+        if(res != -1)
+            return ResourcesCompat.getDrawable(context.getResources(),
+                    res, context.getTheme());
+        else
+            return null;
+    }
+
+    @Bindable
+    public int getResourceId(){
+
+        switch (getSensorType()) {
+            case AIRFLOW:
+                return R.drawable.airflow; // Replace with the actual resource ID for the airflow image
+            case ECG:
+                return R.drawable.ecg; // Replace with the actual resource ID for the airflow image
+            case EMG:
+                return R.drawable.emg; // Replace with the actual resource ID for the airflow image
+            case GSR:
+                return R.drawable.gsr; // Replace with the actual resource ID for the airflow image
+            case POSITION:
+                return R.drawable.position; // Replace with the actual resource ID for the airflow image
+            case SNORE:
+                return R.drawable.snore; // Replace with the actual resource ID for the airflow image
+            case TEMP:
+                return R.drawable.temperature;
+            case SPIR:
+                return R.drawable.spir; // Replace with the actual resource ID for the airflow image
+            case EEG:
+                return R.drawable.eeg; // Replace with the actual resource ID for the airflow image
+            case SPO2:
+                return R.drawable.spo; // Replace with the actual resource ID for the airflow image
+            case BLOOD:
+                return R.drawable.blood; // Replace with the actual resource ID for the airflow image
+            case GLUCO:
+                return R.drawable.gluco; // Replace with the actual resource ID for the airflow image
+            case SCALE:
+                return R.drawable.scale; // Replace with the actual resource ID for the airflow image
+            default:
+                return R.drawable.ic_sensors;
+        }
     }
 }

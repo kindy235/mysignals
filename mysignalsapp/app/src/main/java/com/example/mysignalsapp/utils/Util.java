@@ -1,7 +1,11 @@
 package com.example.mysignalsapp.utils;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.Toast;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.databinding.Bindable;
+import com.example.mysignalsapp.R;
 import com.example.mysignalsapp.adapter.MemberSpinnerAdapter;
 import com.example.mysignalsapp.entity.Member;
 import com.example.mysignalsapp.entity.Sensor;
@@ -14,6 +18,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Util {
 
@@ -224,60 +229,55 @@ public class Util {
         return null;
     }
 
-    public static void postSensor(Sensor sensor, Member member, Context context) {
-        ApiClient apiClient = new ApiClient();
-        apiClient.getApiService(context).postSensor(member.getId(), sensor)
-                .enqueue(new Callback<Sensor>() {
-                    @Override
-                    public void onResponse(@NotNull Call<Sensor> call, @NotNull Response<Sensor> response) {
-                        Sensor sensors = response.body();
-                        if (response.isSuccessful()) {
-                            //Sensor sensors = response.body();
-                            Toast.makeText(context, "Data Upload success", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NotNull Call<Sensor> call, @NotNull Throwable t) {
-                        Log.d("FETCH", t.getMessage());
-                    }
-                });
+    public static List<String> getSensorTypeList() {
+        List<String> sensorTypes = new ArrayList<>();
+        for (SensorType type : SensorType.values()) {
+            sensorTypes.add(type.name());
+        }
+        return sensorTypes;
     }
 
-    public static void postMember(Member member, Context context) {
-        ApiClient apiClient = new ApiClient();
-        apiClient.getApiService(context).postMember(member).enqueue(new Callback<Member>() {
-            @Override
-            public void onResponse(@NotNull Call<Member> call, @NotNull Response<Member> response) {
-                if (response.isSuccessful()){
-                    Member member = response.body();
-                    Toast.makeText(context, "Member added to the cloud API", Toast.LENGTH_SHORT).show();
-                }
-            }
+    public static Drawable getImage(Context context, int res) {
 
-            @Override
-            public void onFailure(@NotNull Call<Member> call, @NotNull Throwable t) {
-                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
+        if(res != -1)
+            return ResourcesCompat.getDrawable(context.getResources(),
+                    res, context.getTheme());
+        else
+            return null;
     }
 
-    public static void deleteMember(Long memberId, Context context) {
-        ApiClient apiClient = new ApiClient();
-        apiClient.getApiService(context).deleteMember(memberId).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(@NotNull Call<Void> call, @NotNull Response<Void> response) {
-                if (response.isSuccessful()){
-                    Toast.makeText(context, "Member deleted from the cloud API", Toast.LENGTH_SHORT).show();
-                }
-            }
+    public static int getSensorTypeResourceId(String type){
 
-            @Override
-            public void onFailure(@NotNull Call<Void> call, Throwable t) {
-                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
+        switch (SensorType.valueOf(type)) {
+            case AIRFLOW:
+                return R.drawable.airflow; // Replace with the actual resource ID for the airflow image
+            case ECG:
+                return R.drawable.ecg; // Replace with the actual resource ID for the airflow image
+            case EMG:
+                return R.drawable.emg; // Replace with the actual resource ID for the airflow image
+            case GSR:
+                return R.drawable.gsr; // Replace with the actual resource ID for the airflow image
+            case POSITION:
+                return R.drawable.position; // Replace with the actual resource ID for the airflow image
+            case SNORE:
+                return R.drawable.snore; // Replace with the actual resource ID for the airflow image
+            case TEMP:
+                return R.drawable.temperature;
+            case SPIR:
+                return R.drawable.spir; // Replace with the actual resource ID for the airflow image
+            case EEG:
+                return R.drawable.eeg; // Replace with the actual resource ID for the airflow image
+            case SPO2:
+                return R.drawable.spo; // Replace with the actual resource ID for the airflow image
+            case BLOOD:
+                return R.drawable.blood; // Replace with the actual resource ID for the airflow image
+            case GLUCO:
+                return R.drawable.gluco; // Replace with the actual resource ID for the airflow image
+            case SCALE:
+                return R.drawable.scale; // Replace with the actual resource ID for the airflow image
+            default:
+                return R.drawable.ic_sensors;
+        }
     }
+
 }

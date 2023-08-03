@@ -8,7 +8,6 @@ import com.example.mysignalsapp.entity.Member;
 
 public class UserDataViewModel extends BaseObservable {
 
-
     private Member member;
     public void setMember(Member member) {
         this.member = member;

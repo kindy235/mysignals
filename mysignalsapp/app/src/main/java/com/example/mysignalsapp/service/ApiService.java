@@ -24,7 +24,7 @@ public interface ApiService {
     Call<LoginResponse> login(@Body LoginRequest request);
 
     @GET(Constants.SENSORS_URL)
-    Call<List<Sensor>> getAllSensors();
+    Call<ArrayList<Sensor>> getAllSensors();
 
     @GET(Constants.SENSORS_URL)
     Call<Sensor> getSensorsBy(@Query("type") SensorType type);
@@ -33,7 +33,7 @@ public interface ApiService {
     Call<ArrayList<Member>> getAllMembers();
 
     @GET(Constants.MEMBERS_URL+"/{memberId}/"+Constants.SENSORS_URL)
-    Call<List<Sensor>> getMemberSensors(@Path("memberId") long memberId, @Query("type") SensorType type);
+    Call<ArrayList<Sensor>> getMemberSensors(@Path("memberId") long memberId, @Query("type") String type);
 
     @POST(Constants.MEMBERS_URL+"/{memberId}/"+Constants.SENSORS_URL)
     Call<Sensor> postSensor(@Path("memberId") long memberId, @Body Sensor sensor);

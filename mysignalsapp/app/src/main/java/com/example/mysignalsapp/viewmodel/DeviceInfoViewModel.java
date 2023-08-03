@@ -1,6 +1,7 @@
 package com.example.mysignalsapp.viewmodel;
 
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
@@ -13,6 +14,7 @@ public class DeviceInfoViewModel extends BaseObservable {
         notifyChange();
     }
 
+    @SuppressLint("MissingPermission")
     @Bindable
     public String getName() {
         return device != null ? device.getName() : "";

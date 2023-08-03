@@ -48,7 +48,9 @@ public class SignInActivity extends AppCompatActivity {
                                 assert loginResponse != null;
                                 sessionManager.saveAuthToken(loginResponse.getAccessToken());
                                 Toast.makeText(SignInActivity.this, "Login success", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                                Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                                intent.putExtra("login", loginResponse);
+                                startActivity(intent);
                                 //finish();
                             } else {
                                 Toast.makeText(SignInActivity.this, "Login error", Toast.LENGTH_SHORT).show();

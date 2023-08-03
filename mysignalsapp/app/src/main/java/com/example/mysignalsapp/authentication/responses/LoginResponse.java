@@ -1,9 +1,12 @@
 package com.example.mysignalsapp.authentication.responses;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import androidx.annotation.NonNull;
 import com.example.mysignalsapp.entity.User;
 import com.google.gson.annotations.SerializedName;
 
-public class LoginResponse {
+public class LoginResponse implements Parcelable {
     @SerializedName("id")
     private int id;
     @SerializedName("username")
@@ -32,6 +35,27 @@ public class LoginResponse {
         this.tokenType = tokenType;
         this.accessToken = accessToken;
     }
+
+    protected LoginResponse(Parcel in) {
+        id = in.readInt();
+        username = in.readString();
+        email = in.readString();
+        roles = in.createStringArray();
+        tokenType = in.readString();
+        accessToken = in.readString();
+    }
+
+    public static final Creator<LoginResponse> CREATOR = new Creator<LoginResponse>() {
+        @Override
+        public LoginResponse createFromParcel(Parcel in) {
+            return new LoginResponse(in);
+        }
+
+        @Override
+        public LoginResponse[] newArray(int size) {
+            return new LoginResponse[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -79,5 +103,20 @@ public class LoginResponse {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(username);
+        dest.writeString(email);
+        dest.writeStringArray(roles);
+        dest.writeString(tokenType);
+        dest.writeString(accessToken);
     }
 }

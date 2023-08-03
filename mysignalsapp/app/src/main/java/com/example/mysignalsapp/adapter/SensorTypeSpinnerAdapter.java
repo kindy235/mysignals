@@ -10,18 +10,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.mysignalsapp.R;
 import com.example.mysignalsapp.entity.Member;
+import com.example.mysignalsapp.utils.Util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MemberSpinnerAdapter extends ArrayAdapter<Member> {
+public class SensorTypeSpinnerAdapter extends ArrayAdapter<String> {
 
-    private ArrayList<Member> members;
+    private final List<String> sensorTypes;
+    private final Context context;
 
-    public MemberSpinnerAdapter(Context context, ArrayList<Member> members) {
-        super(context, 0, members);
-        this.members = members;
+    public SensorTypeSpinnerAdapter(Context context, List<String> sensorTypes) {
+        super(context, 0, sensorTypes);
+        this.sensorTypes = sensorTypes;
+        this.context = context;
     }
 
     @Override
@@ -36,22 +39,17 @@ public class MemberSpinnerAdapter extends ArrayAdapter<Member> {
 
     private View initView(int position, View convertView, ViewGroup parent){
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.spinner_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.spinner_type_item, parent, false);
         }
 
         // Set the member's name as the text for the dropdown item
-        Member member = members.get(position);
-        if (member != null) {
+        String type  = sensorTypes.get(position);
+        if (type != null) {
             ImageView imageView = convertView.findViewById(R.id.image);
             TextView textView = convertView.findViewById(R.id.name);
-            imageView.setContentDescription(member.getPicture()); // Adjust to your Member model getter
-            textView.setText(member.getName()); // Adjust to your Member model getter
+            imageView.setImageResource(Util.getSensorTypeResourceId(type)); // Adjust to your Member model getter
+            textView.setText(type); // Adjust to your Member model getter
         }
         return convertView;
-    }
-
-    public void setMembers(ArrayList<Member> members) {
-        this.members = members;
-        notifyDataSetChanged();
     }
 }

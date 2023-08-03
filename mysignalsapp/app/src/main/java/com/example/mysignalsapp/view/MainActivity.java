@@ -2,38 +2,26 @@ package com.example.mysignalsapp.view;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.viewpager2.widget.ViewPager2;
 import com.example.mysignalsapp.R;
-import com.example.mysignalsapp.entity.Sensor;
+import com.example.mysignalsapp.authentication.responses.LoginResponse;
 import com.example.mysignalsapp.databinding.ActivityMainBinding;
-import com.example.mysignalsapp.service.ApiClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import org.jetbrains.annotations.NotNull;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-import java.util.ArrayList;
-import java.util.List;
+import static android.content.Intent.getIntent;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding binding;
     private  FragmentManager fragmentManager;
     private HomeFragment homeFragment;
     private UserDataFragment userDataFragment;
     private AccountFragment accountFragment;
-    private BottomNavigationView bottomNavigationView;
-    private ViewPager2 viewPager2;
-    ArrayList<Fragment> fragmentArrayList;
 
 
     @SuppressLint("NonConstantResourceId")
@@ -42,11 +30,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
+        ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        // Retrieve the User object from the Intent
+        Intent intent = getIntent();
+        if (intent != null) {
+            LoginResponse user = (LoginResponse) intent.getSerializableExtra("login");
+            if (user != null) {
+                // Use the user object as needed
+                // ...
+            }
+        }
         homeFragment = new HomeFragment();
         replaceFragment(homeFragment);
-        bottomNavigationView = findViewById(R.id.btn_navigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.btn_navigation);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
 
@@ -72,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
-        //fetchSensors();
+
     }
 
     private void replaceFragment(Fragment fragment){
@@ -88,24 +84,4 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
     }
-
-    private void fetchSensors() {
-        ApiClient apiClient = new ApiClient();
-        apiClient.getApiService(this).getAllSensors()
-                .enqueue(new Callback<List<Sensor>>() {
-                    @Override
-                    public void onResponse(@NotNull Call<List<Sensor>> call, @NotNull Response<List<Sensor>> response) {
-                        if (response.isSuccessful()){
-                            List<Sensor> sensors = response.body();
-                            Toast.makeText(MainActivity.this, "Fetch sensors data success", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NotNull Call<List<Sensor>> call, @NotNull Throwable t) {
-                        Log.d("FETCH", t.getMessage());
-                    }
-                });
-    }
-
 }

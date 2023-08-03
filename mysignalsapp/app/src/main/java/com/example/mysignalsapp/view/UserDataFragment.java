@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.mysignalsapp.R;
@@ -21,6 +23,7 @@ import com.example.mysignalsapp.databinding.FragmentUserdataBinding;
 import com.example.mysignalsapp.entity.Member;
 import com.example.mysignalsapp.service.ApiClient;
 import com.example.mysignalsapp.utils.AddMemberDialog;
+import com.example.mysignalsapp.utils.ApiRequests;
 import com.example.mysignalsapp.utils.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
@@ -105,7 +108,15 @@ public class UserDataFragment extends Fragment implements
 
     @Override
     public void onMemberClick(Member member) {
-        Toast.makeText(getContext(), member.toString(), Toast.LENGTH_SHORT).show();
+        // Ouvrez le fragment DeviceFragmentInfo et transmettez les informations du dispositif
+        MemberInfoFragment memberInfoFragment = new MemberInfoFragment();
+        memberInfoFragment.setMember(member);
+
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, memberInfoFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -117,7 +128,7 @@ public class UserDataFragment extends Fragment implements
 
     @Override
     public void onMemberAdded(Member member){
-        Util.postMember(member, getContext());
+        ApiRequests.postMember(member, getContext());
         try {
             Thread.sleep(100);
         }catch (Exception ignored){
@@ -127,7 +138,7 @@ public class UserDataFragment extends Fragment implements
 
     @Override
     public void onRemoveClick(Member member) {
-        Util.deleteMember(member.getId(), getContext());
+        ApiRequests.deleteMember(member.getId(), getContext());
         try {
             Thread.sleep(100);
         }catch (Exception ignored){

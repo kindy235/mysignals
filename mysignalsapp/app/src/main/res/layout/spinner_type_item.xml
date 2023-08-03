@@ -2,12 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:padding="5dp"
                 android:layout_gravity="center">
     <ImageView
             android:id="@+id/image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_person"
+            android:src="@drawable/airflow"
             android:contentDescription="image"
             app:tint="@color/baby_blue"/>
     <TextView

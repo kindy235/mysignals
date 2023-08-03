@@ -24,6 +24,7 @@ import com.example.mysignalsapp.databinding.DeviceInfoBinding;
 import com.example.mysignalsapp.entity.Member;
 import com.example.mysignalsapp.entity.Sensor;
 import com.example.mysignalsapp.service.ApiClient;
+import com.example.mysignalsapp.utils.ApiRequests;
 import com.example.mysignalsapp.utils.SensorDataType;
 import com.example.mysignalsapp.utils.SensorType;
 import com.example.mysignalsapp.utils.Util;
@@ -786,7 +787,7 @@ public class DeviceInfoFragment extends Fragment implements
             //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
             if (selectedMember !=null) {
                 Sensor sensor = new Sensor(Util.getSensorDataByType(SensorDataType.TYPE, lbSensorObject), currentDate, Util.getSensorDataByType(SensorDataType.UNIT, lbSensorObject), value);
-                Util.postSensor(sensor, selectedMember, getContext());
+                ApiRequests.postSensor(sensor, selectedMember, getContext());
             }
         }
     }

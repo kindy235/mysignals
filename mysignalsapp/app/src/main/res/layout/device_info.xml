@@ -70,6 +70,19 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="5dp"/>
+        <Spinner
+                android:id="@+id/spinner"
+                style="@style/TextAppearance.AppCompat.Widget.DropDownItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:popupBackground="@color/baby_blue"
+                android:layout_gravity="center"
+                android:minHeight="48dp"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
+                android:spinnerMode="dialog"
+                android:contentDescription="@string/spinner_title"/>
 
         <androidx.cardview.widget.CardView
                 android:id="@+id/sensors_card_view_list"

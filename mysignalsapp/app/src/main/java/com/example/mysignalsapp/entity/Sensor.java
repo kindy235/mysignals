@@ -1,63 +1,47 @@
 package com.example.mysignalsapp.entity;
 
-
-import com.example.mysignalsapp.utils.SensorType;
-
-import java.sql.Date;
+import com.google.gson.annotations.SerializedName;
 
 public class Sensor {
+    @SerializedName("id")
+    private int id;
 
+    @SerializedName("type")
+    private String type;
 
-    private Long id;
+    @SerializedName("date")
+    private String date;
 
-    private SensorType type;
+    @SerializedName("unit")
+    private String unit;
 
-    private Date date;
+    @SerializedName("value")
+    private String value;
 
-    private double valeur;
-
-    // Constructors, getters, and setters
-
-    public Sensor() {
-    }
-
-    public Sensor(SensorType type, Date date, double value) {
+    public Sensor(String type, String date, String unit, String value) {
         this.type = type;
         this.date = date;
-        this.valeur = value;
+        this.unit = unit;
+        this.value = value;
     }
 
-    // Getters and Setters
-
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public SensorType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(SensorType type) {
-        this.type = type;
-    }
-
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public String getUnit() {
+        return unit;
     }
 
-    public double getValue() {
-        return valeur;
-    }
-
-    public void setValue(double value) {
-        this.valeur = value;
+    public String getValue() {
+        return value;
     }
 }

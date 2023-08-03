@@ -110,7 +110,6 @@ public class HomeFragment extends Fragment implements
         });
 
         return binding.getRoot();
-
     }
 
 

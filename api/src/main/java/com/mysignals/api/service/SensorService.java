@@ -14,5 +14,4 @@ public interface SensorService {
     List<Sensor> getSensorsByTypeAndByMember(SensorType type, Long memberId);
     List<Sensor> getSensorsByMemberId(Long memberId);
     void deleteAllSenorsOfMember(Long memberId);
-
 }

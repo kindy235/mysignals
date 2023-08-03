@@ -1,0 +1,60 @@
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+    <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:inputType="textPersonName" android:autofillHints="" android:minHeight="48dp"/>
+
+    <EditText
+            android:id="@+id/editTextSurname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Surname"
+            android:inputType="textPersonName" android:autofillHints="" android:minHeight="48dp"/>
+
+    <EditText
+            android:id="@+id/editTextPicture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Picture URL"
+            android:inputType="text" android:autofillHints="" android:minHeight="48dp"/>
+
+    <EditText
+            android:id="@+id/editTextDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description"
+            android:inputType="textMultiLine" android:autofillHints="" android:minHeight="48dp"/>
+
+    <EditText
+            android:id="@+id/editTextHeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Height"
+            android:inputType="number" android:autofillHints="" android:minHeight="48dp"/>
+
+    <EditText
+            android:id="@+id/editTextWeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Weight"
+            android:inputType="number" android:autofillHints="" android:minHeight="48dp"/>
+
+    <EditText
+            android:id="@+id/editTextBirthday"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Select Birthday"
+            android:inputType="none"
+            android:drawableEnd="@drawable/ic_calendar"
+            android:clickable="true"
+            android:focusable="true" android:minHeight="48dp" android:autofillHints=""/>
+
+</LinearLayout>

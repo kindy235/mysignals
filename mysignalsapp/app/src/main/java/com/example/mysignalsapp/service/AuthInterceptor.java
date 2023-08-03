@@ -10,7 +10,7 @@ import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 
 public class AuthInterceptor implements Interceptor {
-    private SessionManager sessionManager;
+    private final SessionManager sessionManager;
 
     public AuthInterceptor(Context context) {
         sessionManager = new SessionManager(context);

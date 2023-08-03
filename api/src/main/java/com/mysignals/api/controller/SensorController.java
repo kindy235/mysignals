@@ -53,7 +53,8 @@ public class SensorController {
         Sensor sensor = memberService.getMemberById(memberId).map(member -> {
             sensorRequest.setMember(member);
             return sensorService.createSensor(sensorRequest);
-        }).orElseThrow(() -> new ResourceNotFoundException("Not found Member with id = " + memberId));
+        })
+        .orElseThrow(() -> new ResourceNotFoundException("Not found Member with id = " + memberId));
 
         return new ResponseEntity<>(sensor, HttpStatus.CREATED);
     }

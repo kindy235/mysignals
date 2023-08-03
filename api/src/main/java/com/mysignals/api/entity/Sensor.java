@@ -27,7 +27,7 @@ public class Sensor {
 
     private Date date;
 
-    private double valeur;
+    private String valeur;
     
     private String unit;
 
@@ -36,7 +36,7 @@ public class Sensor {
     public Sensor() {
     }
 
-    public Sensor(SensorType type, Date date, double value, String unit, Member member) {
+    public Sensor(SensorType type, Date date, String value, String unit, Member member) {
         this.type = type;
         this.date = date;
         this.valeur = value;
@@ -70,11 +70,11 @@ public class Sensor {
         this.date = date;
     }
 
-    public double getValue() {
+    public String getValue() {
         return valeur;
     }
 
-    public void setValue(double value) {
+    public void setValue(String value) {
         this.valeur = value;
     }
 

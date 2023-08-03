@@ -17,10 +17,4 @@
             android:title="@string/account"
             app:showAsAction="ifRoom"
             android:icon="@drawable/ic_account"/>
-
-    <item
-            android:id="@+id/action_settings"
-            android:title="@string/settings"
-            app:showAsAction="ifRoom"
-            android:icon="@drawable/ic_settings"/>
 </menu>

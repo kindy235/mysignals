@@ -4,42 +4,80 @@ import com.example.mysignalsapp.entity.User;
 import com.google.gson.annotations.SerializedName;
 
 public class LoginResponse {
-    @SerializedName("status_code")
-    private int statusCode;
+    @SerializedName("id")
+    private int id;
+    @SerializedName("username")
+    private String username;
 
-    @SerializedName("auth_token")
-    private String authToken;
+    @SerializedName("email")
+    private String email;
 
-    @SerializedName("user")
-    private User user;
+    @SerializedName("roles")
+    private String[] roles;
 
-    public LoginResponse(int statusCode, String authToken, User user) {
-        this.statusCode = statusCode;
-        this.authToken = authToken;
-        this.user = user;
+    @SerializedName("tokenType")
+    private String tokenType;
+
+    @SerializedName("accessToken")
+    private String accessToken;
+
+    // Create getters and setters as needed
+
+    // Constructor (optional, you can create it if needed)
+    public LoginResponse(int id, String username, String email, String[] roles, String tokenType, String accessToken) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.roles = roles;
+        this.tokenType = tokenType;
+        this.accessToken = accessToken;
     }
 
-    public int getStatusCode() {
-        return statusCode;
+    public int getId() {
+        return id;
     }
 
-    public void setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getAuthToken() {
-        return authToken;
+    public String getUsername() {
+        return username;
     }
 
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public User getUser() {
-        return user;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String[] getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String[] roles) {
+        this.roles = roles;
+    }
+
+    public String getTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 }

@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import com.example.mysignalsapp.R;
 import com.example.mysignalsapp.authentication.responses.LoginResponse;
 import com.example.mysignalsapp.databinding.ActivityMainBinding;
+import com.example.mysignalsapp.entity.Member;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import static android.content.Intent.getIntent;
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         // Retrieve the User object from the Intent
         Intent intent = getIntent();
         if (intent != null) {
-            LoginResponse user = (LoginResponse) intent.getSerializableExtra("login");
+            Member user = (Member) intent.getSerializableExtra("login");
             if (user != null) {
                 // Use the user object as needed
                 // ...

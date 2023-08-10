@@ -35,12 +35,12 @@ import retrofit2.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.Executor;
 
 
 public class MemberInfoFragment extends Fragment {
 
     private Member member;
-    private String selectedType;
     private LineChart lineChart;
     private Timer timer;
     private ArrayList<Sensor> sensors;
@@ -49,7 +49,6 @@ public class MemberInfoFragment extends Fragment {
     private LineDataSet lineDataSet;
     private LineData lineData;
 
-    private final Handler handler = new Handler();
     private ChartUpdateRunnable chartUpdateRunnable;
 
     @Override
@@ -73,7 +72,16 @@ public class MemberInfoFragment extends Fragment {
 
         lineChart = binding.getRoot().findViewById(R.id.lineChart);
         chartUpdateRunnable = new ChartUpdateRunnable();
-        chartUpdateRunnable.setHandler(handler);
+        /*
+        Executor executor = new Executor() {
+            @Override
+            public void execute(Runnable command) {
+                command.run();
+            }
+        };
+
+         */
+        chartUpdateRunnable.setHandler(new Handler());
         sensors = new ArrayList<>();
         setupChart();
 
@@ -81,11 +89,10 @@ public class MemberInfoFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String type= (String) parent.getSelectedItem();
-                if (type != null){
-                    selectedType = type;
+                if (type != null && member != null){
                     chartUpdateRunnable.setMemberId(member.getId());
                     chartUpdateRunnable.setType(type);
-                    chartUpdateRunnable.handler.postDelayed(chartUpdateRunnable, 2000);
+                    chartUpdateRunnable.getHandler().postDelayed(chartUpdateRunnable, 2000);
                 }
             }
 
@@ -188,14 +195,17 @@ public class MemberInfoFragment extends Fragment {
             timer.cancel();
             timer = null;
         }
-        handler.removeCallbacks(chartUpdateRunnable);
+        if (chartUpdateRunnable != null){
+            chartUpdateRunnable.getHandler().removeCallbacks(chartUpdateRunnable);
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Remove the callback to stop periodic updates
-        handler.removeCallbacks(chartUpdateRunnable);
+        if (chartUpdateRunnable != null){
+            chartUpdateRunnable.getHandler().removeCallbacks(chartUpdateRunnable);
+        }
     }
 
     class ChartUpdateRunnable implements Runnable {

@@ -1,6 +1,7 @@
 package com.example.mysignalsapp.adapter;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +14,8 @@ import com.example.mysignalsapp.entity.Member;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
+@SuppressLint("SetTextI18n")
 public class MemberSpinnerAdapter extends ArrayAdapter<Member> {
 
     private ArrayList<Member> members;
@@ -45,7 +46,7 @@ public class MemberSpinnerAdapter extends ArrayAdapter<Member> {
             ImageView imageView = convertView.findViewById(R.id.image);
             TextView textView = convertView.findViewById(R.id.name);
             imageView.setContentDescription(member.getPicture()); // Adjust to your Member model getter
-            textView.setText(member.getName()); // Adjust to your Member model getter
+            textView.setText(member.getSurname() + " " + member.getName()); // Adjust to your Member model getter
         }
         return convertView;
     }

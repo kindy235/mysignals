@@ -1,26 +1,40 @@
 package com.example.mysignalsapp.utils;
+
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
+import android.os.Build;
 import android.widget.Toast;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.databinding.Bindable;
 import com.example.mysignalsapp.R;
-import com.example.mysignalsapp.adapter.MemberSpinnerAdapter;
-import com.example.mysignalsapp.entity.Member;
-import com.example.mysignalsapp.entity.Sensor;
-import com.example.mysignalsapp.service.ApiClient;
+import com.libelium.mysignalsconnectkit.BluetoothManagerHelper;
 import com.libelium.mysignalsconnectkit.pojo.LBSensorObject;
 import com.libelium.mysignalsconnectkit.utils.StringConstants;
-import org.jetbrains.annotations.NotNull;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Util {
+    private static final int ALL_PERMISSION = 1;
+
+    public static String[] LOCATION_PERMISSIONS = {
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION
+    };
+
+    public static String[] BLUETOOTH_PERMISSIONS_VERSION_CODE_S = {
+            android.Manifest.permission.BLUETOOTH_CONNECT,
+            android.Manifest.permission.BLUETOOTH_SCAN,
+            android.Manifest.permission.BLUETOOTH_ADVERTISE
+    };
+
+    public static String[] BLUETOOTH_PERMISSIONS = {
+            android.Manifest.permission.BLUETOOTH,
+            android.Manifest.permission.BLUETOOTH_ADMIN
+    };
 
     public static String convertToHumanReadablePosition(int bodyposition) {
         String strPosition;
@@ -280,4 +294,44 @@ public class Util {
         }
     }
 
+    // Request Bluetooth and Location permissions
+    public static boolean requestPermissions(Context context, Activity activity) {
+        List<String> listPermissionsNeeded = new ArrayList<>();
+
+        if (BluetoothManagerHelper.hasBluetooth(context)){
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (hasPermissions(context, BLUETOOTH_PERMISSIONS_VERSION_CODE_S)){
+                    listPermissionsNeeded.addAll(Arrays.asList(BLUETOOTH_PERMISSIONS_VERSION_CODE_S));
+                }
+                if (hasPermissions(context, LOCATION_PERMISSIONS)){
+                    listPermissionsNeeded.addAll(Arrays.asList(LOCATION_PERMISSIONS));
+                }
+            } else {
+                if (hasPermissions(context, BLUETOOTH_PERMISSIONS)){
+                    listPermissionsNeeded.addAll(Arrays.asList(BLUETOOTH_PERMISSIONS));
+                }
+            }
+            if (!listPermissionsNeeded.isEmpty()){
+                ActivityCompat.requestPermissions(activity, listPermissionsNeeded.toArray(new String[0]), ALL_PERMISSION);
+            }
+            return true;
+        }else {
+            showToast(context, "Device has not bluetooth feature");
+            return false;
+        }
+    }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        for (String permission : permissions) {
+            if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void showToast(Context context, String msg){
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+    }
 }

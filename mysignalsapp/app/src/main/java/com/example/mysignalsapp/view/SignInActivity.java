@@ -3,10 +3,7 @@ package com.example.mysignalsapp.view;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mysignalsapp.R;
@@ -14,6 +11,7 @@ import com.example.mysignalsapp.authentication.requests.LoginRequest;
 import com.example.mysignalsapp.authentication.responses.LoginResponse;
 import com.example.mysignalsapp.utils.SessionManager;
 import com.example.mysignalsapp.service.ApiClient;
+import com.example.mysignalsapp.utils.Util;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,6 +25,8 @@ public class SignInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        Util.requestPermissions(this, this);
 
         apiClient = new ApiClient();
         sessionManager = new SessionManager(this);
@@ -47,20 +47,19 @@ public class SignInActivity extends AppCompatActivity {
                                 LoginResponse loginResponse = response.body();
                                 assert loginResponse != null;
                                 sessionManager.saveAuthToken(loginResponse.getAccessToken());
-                                Toast.makeText(SignInActivity.this, "Login success", Toast.LENGTH_SHORT).show();
+                                Util.showToast(SignInActivity.this, "Login success");
                                 Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                                 intent.putExtra("login", loginResponse);
                                 startActivity(intent);
                                 //finish();
                             } else {
-                                Toast.makeText(SignInActivity.this, "Login error", Toast.LENGTH_SHORT).show();
-                                // Error logging in
+                                Util.showToast(SignInActivity.this, "Login error");
                             }
                         }
 
                         @Override
                         public void onFailure(@NotNull Call<LoginResponse> call, @NotNull Throwable t) {
-                            Toast.makeText(SignInActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Util.showToast(SignInActivity.this, t.getMessage());
                         }
                     });
 

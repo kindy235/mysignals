@@ -538,29 +538,24 @@ public class DeviceInfoFragment extends Fragment implements
     // BluetoothManagerQueueCallback
     @Override
     public void onStartWriteQueueDescriptor(BluetoothGattDescriptor bluetoothGattDescriptor) {
-        //connectResult.setText("onStartWriteQueueDescriptor");
     }
 
     @Override
     public void onStartReadCharacteristic(BluetoothGattCharacteristic bluetoothGattCharacteristic) {
-        //connectResult.setText("onStartReadCharacteristic");
     }
 
 
     @Override
     public void onFinishWriteAllDescriptors() {
-        //connectResult.setText("onFinishWriteAllDescriptors");
         writeCharacteristicData();
     }
 
     @Override
     public void onFinishReadAllCharacteristics() {
-        //connectResult.setText("onFinishReadAllCharacteristics");
     }
 
     @Override
     public void onCharacteristicChangedQueue(BluetoothGattCharacteristic bluetoothGattCharacteristic) {
-        //connectResult.setText("onCharacteristicChangedQueue");
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.example.mysignalsapp.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
@@ -8,21 +7,18 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.mysignalsapp.R;
 import com.example.mysignalsapp.databinding.SensorItemBinding;
-import com.example.mysignalsapp.view.DeviceInfoFragment;
 import com.example.mysignalsapp.viewmodel.SensorViewModel;
 import com.libelium.mysignalsconnectkit.pojo.LBSensorObject;
-import com.libelium.mysignalsconnectkit.utils.LBValueConverter;
 import com.libelium.mysignalsconnectkit.utils.StringConstants;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder> {
+public class SensorListAdapter extends RecyclerView.Adapter<SensorListAdapter.ViewHolder> {
 
     private ArrayList<LBSensorObject> sensorList;
 
-    public SensorAdapter(ArrayList<LBSensorObject> sensorList) {
+    public SensorListAdapter(ArrayList<LBSensorObject> sensorList) {
         assert sensorList != null;
         this.sensorList = sensorList;
     }
@@ -38,7 +34,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NotNull SensorAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NotNull SensorListAdapter.ViewHolder holder, int position) {
 
         LBSensorObject sensorObject = sensorList.get(position);
         if (sensorObject != null) {

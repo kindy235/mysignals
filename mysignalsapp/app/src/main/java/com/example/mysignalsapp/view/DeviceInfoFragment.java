@@ -1,10 +1,8 @@
 package com.example.mysignalsapp.view;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.bluetooth.*;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,18 +13,16 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.mysignalsapp.R;
 import com.example.mysignalsapp.adapter.MemberSpinnerAdapter;
-import com.example.mysignalsapp.adapter.SensorAdapter;
+import com.example.mysignalsapp.adapter.SensorListAdapter;
 import com.example.mysignalsapp.databinding.DeviceInfoBinding;
 import com.example.mysignalsapp.entity.Member;
 import com.example.mysignalsapp.entity.Sensor;
 import com.example.mysignalsapp.service.ApiClient;
 import com.example.mysignalsapp.utils.ApiRequests;
 import com.example.mysignalsapp.utils.SensorDataType;
-import com.example.mysignalsapp.utils.SensorType;
 import com.example.mysignalsapp.utils.Util;
 import com.example.mysignalsapp.viewmodel.DeviceInfoViewModel;
 import com.libelium.mysignalsconnectkit.BluetoothManagerService;
@@ -45,8 +41,6 @@ import retrofit2.Response;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -67,7 +61,7 @@ public class DeviceInfoFragment extends Fragment implements
     private BluetoothGattCharacteristic characteristicSensorList;
 
     private Timer timerRssi;
-    private SensorAdapter sensorAdapter;
+    private SensorListAdapter sensorListAdapter;
     private BluetoothDevice device;
     private Button connectBtn;
     private boolean isConnected;
@@ -104,8 +98,8 @@ public class DeviceInfoFragment extends Fragment implements
         sensorsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         selectedSensors = createSensorsDisplay();
 
-        sensorAdapter = new SensorAdapter(selectedSensors);
-        sensorsRecyclerView.setAdapter(sensorAdapter);
+        sensorListAdapter = new SensorListAdapter(selectedSensors);
+        sensorsRecyclerView.setAdapter(sensorListAdapter);
 
         try {
             mService = BluetoothManagerService.getInstance();
@@ -775,7 +769,7 @@ public class DeviceInfoFragment extends Fragment implements
         @Override
         public void run() {
             Log.d("NEW VALUE", "Value: " + value);
-            sensorAdapter.updateValue(lbSensorObject, Float.parseFloat(value));
+            sensorListAdapter.updateValue(lbSensorObject, Float.parseFloat(value));
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             String currentDate = sdf.format(new Date());
             currentDate = currentDate.replace(" ", "T");

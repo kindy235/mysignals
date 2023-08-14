@@ -2,21 +2,17 @@ package com.example.mysignalsapp.adapter;
 
 import android.bluetooth.BluetoothDevice;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.mysignalsapp.R;
 import com.example.mysignalsapp.databinding.DeviceItemBinding;
-import com.example.mysignalsapp.view.HomeFragment;
 import com.example.mysignalsapp.viewmodel.HomeViewModel;
+import com.libelium.mysignalsconnectkit.pojo.LBSensorObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.ViewHolder>{
 
@@ -32,7 +28,6 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         assert bluetoothDeviceList != null;
         this.bluetoothDeviceList = bluetoothDeviceList;
     }
-
 
     @NotNull
     @Override
@@ -79,12 +74,21 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         this.listener = listener;
     }
 
-    public void updateData(ArrayList<BluetoothDevice> newBluetoothDeviceList) {
-        if (newBluetoothDeviceList!=null) {
-            bluetoothDeviceList = newBluetoothDeviceList;
-            notifyDataSetChanged();
+    public void updateDeviceList(BluetoothDevice newDevice){
+        if (!bluetoothDeviceList.contains(newDevice)){
+            bluetoothDeviceList.add(newDevice);
+            notifyItemChanged(bluetoothDeviceList.indexOf(newDevice));
         }
     }
 
+    public ArrayList<BluetoothDevice> getBluetoothDeviceList() {
+        return bluetoothDeviceList;
+    }
 
+    public void setBluetoothDeviceList(ArrayList<BluetoothDevice> bluetoothDeviceList) {
+        if (bluetoothDeviceList!=null) {
+            this.bluetoothDeviceList = bluetoothDeviceList;
+            notifyDataSetChanged();
+        }
+    }
 }

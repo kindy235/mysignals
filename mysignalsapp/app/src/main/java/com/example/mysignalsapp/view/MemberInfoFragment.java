@@ -35,17 +35,18 @@ import retrofit2.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 public class MemberInfoFragment extends Fragment {
 
     private Member member;
     private LineChart lineChart;
-    private Timer timer;
     private ArrayList<Sensor> sensors;
 
-    private List<Entry> entries = new ArrayList<>();
+    private List<Entry> entries;
     private LineDataSet lineDataSet;
     private LineData lineData;
 
@@ -64,25 +65,17 @@ public class MemberInfoFragment extends Fragment {
         binding.setUserDataViewModel(userDataViewModel);
 
         Spinner spinner = binding.getRoot().findViewById(R.id.filter_spinner);
+        lineChart = binding.getRoot().findViewById(R.id.lineChart);
         List<String> sensorTypes = Util.getSensorTypeList();
         SensorTypeSpinnerAdapter adapter = new SensorTypeSpinnerAdapter(getContext(), sensorTypes);
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setPrompt("Select sensor type");
         spinner.setAdapter(adapter);
 
-        lineChart = binding.getRoot().findViewById(R.id.lineChart);
         chartUpdateRunnable = new ChartUpdateRunnable();
-        /*
-        Executor executor = new Executor() {
-            @Override
-            public void execute(Runnable command) {
-                command.run();
-            }
-        };
 
-         */
-        chartUpdateRunnable.setHandler(new Handler());
         sensors = new ArrayList<>();
+        entries = new ArrayList<>();
         setupChart();
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -90,9 +83,11 @@ public class MemberInfoFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String type= (String) parent.getSelectedItem();
                 if (type != null && member != null){
+                    //Update chart value
                     chartUpdateRunnable.setMemberId(member.getId());
                     chartUpdateRunnable.setType(type);
-                    chartUpdateRunnable.getHandler().postDelayed(chartUpdateRunnable, 2000);
+                    //Restart chart updating with new type
+                    chartUpdateRunnable.startUpdating();
                 }
             }
 
@@ -191,12 +186,8 @@ public class MemberInfoFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
         if (chartUpdateRunnable != null){
-            chartUpdateRunnable.getHandler().removeCallbacks(chartUpdateRunnable);
+            chartUpdateRunnable.stopUpdating();
         }
     }
 
@@ -204,22 +195,17 @@ public class MemberInfoFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (chartUpdateRunnable != null){
-            chartUpdateRunnable.getHandler().removeCallbacks(chartUpdateRunnable);
+            chartUpdateRunnable.stopUpdating();
         }
     }
 
-    class ChartUpdateRunnable implements Runnable {
+    public class ChartUpdateRunnable implements Runnable {
         private Long memberId;
         private String type;
+        private final ScheduledExecutorService executorService;
 
-        private Handler handler;
-
-        public Handler getHandler() {
-            return handler;
-        }
-
-        public void setHandler(Handler handler) {
-            this.handler = handler;
+        public ChartUpdateRunnable() {
+            this.executorService = Executors.newSingleThreadScheduledExecutor();
         }
 
         public Long getMemberId() {
@@ -238,11 +224,19 @@ public class MemberInfoFragment extends Fragment {
             this.type = type;
         }
 
+        public void startUpdating() {
+            executorService.scheduleWithFixedDelay(this, 0, 2, TimeUnit.SECONDS);
+        }
+
+        public void stopUpdating() {
+            executorService.shutdown();
+        }
+
         @Override
         public void run() {
-            if (memberId != null && type != null){
+            if (memberId != null && type != null) {
+                // Call your function to update the chart here
                 getMemberSensors(memberId, type);
-                handler.postDelayed(this, 2000);
             }
         }
     }

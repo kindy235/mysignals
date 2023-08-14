@@ -39,7 +39,7 @@
                     android:layout_gravity="center"
                     android:textColor="@color/teal_700"
                     android:textStyle="bold"
-                    android:text="@{userDataViewModel.getName()}"/>
+                    android:text="@{userDataViewModel.surname +' '+ userDataViewModel.name}"/>
         </LinearLayout>
 
         <LinearLayout

@@ -3,7 +3,6 @@ package com.example.mysignalsapp.authentication.responses;
 import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
-import com.example.mysignalsapp.entity.User;
 import com.google.gson.annotations.SerializedName;
 
 public class LoginResponse implements Parcelable {

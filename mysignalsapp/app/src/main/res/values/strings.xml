@@ -26,4 +26,5 @@
     <string name="userdataTitle">MEMBERS LIST</string>
     <string name="show_member">Show members</string>
     <string name="spinner_title">Select Member</string>
+    <string name="prompt_confirm_password">Confirm password</string>
 </resources>

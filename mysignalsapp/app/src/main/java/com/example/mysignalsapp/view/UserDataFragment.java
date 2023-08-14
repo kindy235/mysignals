@@ -43,7 +43,8 @@ public class UserDataFragment extends Fragment implements
 
     private ArrayList<Member> memberList;
     private MemberListAdapter memberAdapter;
-    private EditText editTextBirthday;
+    private MemberInfoFragment memberInfoFragment;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -108,8 +109,9 @@ public class UserDataFragment extends Fragment implements
 
     @Override
     public void onMemberClick(Member member) {
-        // Ouvrez le fragment DeviceFragmentInfo et transmettez les informations du dispositif
-        MemberInfoFragment memberInfoFragment = new MemberInfoFragment();
+        if (memberInfoFragment == null){
+            memberInfoFragment = new MemberInfoFragment();
+        }
         memberInfoFragment.setMember(member);
 
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
@@ -130,7 +132,7 @@ public class UserDataFragment extends Fragment implements
     public void onMemberAdded(Member member){
         ApiRequests.postMember(member, getContext());
         try {
-            Thread.sleep(100);
+            Thread.sleep(200);
         }catch (Exception ignored){
         }
         getAllMembers();
@@ -140,7 +142,7 @@ public class UserDataFragment extends Fragment implements
     public void onRemoveClick(Member member) {
         ApiRequests.deleteMember(member.getId(), getContext());
         try {
-            Thread.sleep(100);
+            Thread.sleep(200);
         }catch (Exception ignored){
         }
         getAllMembers();

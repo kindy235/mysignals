@@ -1,6 +1,5 @@
 package com.example.mysignalsapp.authentication.responses;
 
-import com.example.mysignalsapp.entity.User;
 import com.google.gson.annotations.SerializedName;
 
 public class RegistrationResponse {

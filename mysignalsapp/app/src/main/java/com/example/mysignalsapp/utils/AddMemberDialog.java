@@ -80,20 +80,27 @@ public class AddMemberDialog extends DialogFragment {
                     String surname = surnameEditText.getText().toString();
                     String picture = editTextPicture.getText().toString();
                     String description = editTextDescription.getText().toString();
-                    int height = Integer.parseInt(editTextHeight.getText().toString());
-                    int weight = Integer.parseInt(editTextWeight.getText().toString());
+                    int height = !editTextHeight.getText().toString().isEmpty() ? Integer.parseInt(editTextHeight.getText().toString()) : 0;
+                    int weight = !editTextWeight.getText().toString().isEmpty() ? Integer.parseInt(editTextWeight.getText().toString()) : 0;
                     String birthday = editTextBirthday.getText().toString();
-
-                    Member newMember = new Member(name, surname, picture, description, height, weight, birthday);
-                    if (member!= null){
-                        newMember.setId(member.getId());
+                    if (isValidMember(name, surname, picture, description, birthday, height, weight)){
+                        Member newMember = new Member(name, surname, picture, description, height, weight, birthday);
+                        if (member != null){
+                            newMember.setId(member.getId());
+                        }
+                        // Notify the listener (UserDataFragment) about the new member
+                        listener.onMemberAdded(newMember);
+                    }else {
+                        Util.showToast(getContext(), "Invalid Member");
                     }
-                    // Notify the listener (UserDataFragment) about the new member
-                    listener.onMemberAdded(newMember);
                 })
                 .setNegativeButton("Cancel", null);
 
         return builder.create();
+    }
+
+    private boolean isValidMember(String name, String surname, String picture, String description, String birthday, int height, int weight) {
+        return !name.isEmpty() && !surname.isEmpty() && !picture.isEmpty() && !description.isEmpty() && !birthday.isEmpty() && height <300 && weight <1000;
     }
 
     public void setOnMemberAddedListener(OnMemberAddedListener listener){

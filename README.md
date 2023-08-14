@@ -18,7 +18,7 @@ This project involves collecting health data in real time from a "MySignals" IoT
 
 4. **Data Visualization:** Create visualization features for data in the form of graphs and tables, allowing users to monitor and analyze collected health data.
 
-5. **User-Friendly Interface:** Design a user-friendly interface that enables users to log in, view their data, and add new sensors to the system.
+5. **User-Friendly Interface:** Design a user-friendly interface that enables users to log in, view their data, and add new sensors data to the system.
 
 6. **Data Security:** Implement security measures to protect sensitive health data stored in the personal cloud, using robust encryption and authentication methods.
 
@@ -54,12 +54,16 @@ This project involves collecting health data in real time from a "MySignals" IoT
 
 ## API Development
 
+The API is based SpringBoot API
+
 ### Tools
 
 1. IntelliJ IDEA, Visual Studio Code...
-2. Java JRE (SpringBoot API)
+2. Java JDK & JRE (Version >= 8)
 
 ### Architecture
+
+![API Architecture](images/architecture-api.png "MySignals device and Sensors")
 
 ### Services
 
@@ -127,7 +131,7 @@ Overall, these three services work together to provide a comprehensive and secur
 
 ### Classes Diagram
 
-![alt text for screen readers](images/mysignalsapp.png "MySignals device and Sensors")
+![Classes Diagram](images/mysignalsapp.png "MySignals device and Sensors")
 
 ## Demo
 

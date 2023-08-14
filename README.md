@@ -102,16 +102,15 @@ The Authentication Service ensures that only authorized users can access the API
 
 Overall, these three services work together to provide a comprehensive and secure platform for managing sensor data, member profiles, and user authentication within your Spring Boot API.
 
-### Classes Diagram
-
-![alt text for screen readers](images/api.png "MySignals device and Sensors")
-
 ### Database Management System (DBMS)
 
 #### H2 Database (developpment)
 
 #### POSTGRES + PGADMIN4 (deployment)
 
+### Classes Diagram
+
+![Classes Diagram](images/api.png "MySignals device and Sensors")
 
 ## Services Deployment 
 
@@ -137,7 +136,47 @@ Overall, these three services work together to provide a comprehensive and secur
 
 ### API
 
+Inteface Web screen
+
+**Authentication**
+1. Registration
+2. Login
+
+**Member Service**
+1. Create
+
+
+2. Read
+
+
+3. Delele
+
+
+4. Update
+
+
+**Sensor Service**
+1. Create
+
+
+2. Read
+
+
+3. Delele
+
+
+4. Update
+
+### MySignals Bluetooth Device
+
+
 ### Android App
+
+**Installation**
+
+**Connexion to MySignal Device**
+
+**Data Visualization**
 
 ## Improvements
 
@@ -146,5 +185,7 @@ Overall, these three services work together to provide a comprehensive and secur
 - Documentation : https://www.generationrobots.com/media/mysignals_technical_guide_sw.pdf
 - JWT Authentication : https://github.com/bezkoder/spring-boot-spring-security-jwt-authentication.git
 
-- Android Libelium library : 
-
+- Android/IOS libelium libraries : 
+  - http://downloads.libelium.com/mysignals/mysignals_android/MySignalsConnectKit.jar.zip
+  - http://downloads.libelium.com/mysignals/mysignals_android/MySignalsConnectKitDoc-android.zip
+  - http://downloads.libelium.com/mysignals/mysignals_android/MySignalsConnectTest-android.zip

@@ -69,7 +69,7 @@ The API is based SpringBoot API
 
 In the SpringBoot API, we have three services : 
 
-### Sensors Service (CRUD Operations)
+#### Sensors Service
 The Sensors Service is responsible for managing the data related to various sensors used in the system. It implements CRUD (Create, Read, Update, Delete) operations to handle sensor information. This service allows you to perform the following actions:
 
 - **Create:** Add new sensor information to the database, including details like sensor type, data units, and any other relevant metadata.
@@ -79,7 +79,7 @@ The Sensors Service is responsible for managing the data related to various sens
 
 The Sensors Service plays a crucial role in storing and managing the characteristics and properties of different sensors within the system.
 
-### Member Service (CRUD Operations)
+#### Member Service
 The Member Service handles the management of member data within the system. Similar to the Sensors Service, it provides CRUD operations for member-related information. This service allows you to perform the following actions:
 
 - **Create:** Add new member profiles to the system, including details like name, surname, profile picture, description, height, weight, and other relevant attributes.
@@ -89,7 +89,7 @@ The Member Service handles the management of member data within the system. Simi
 
 The Member Service is essential for maintaining records of individuals associated with the health data and providing the necessary details for data analysis and visualization.
 
-### Authentication Service (JWT Authentication)
+#### Authentication Service (JWT Authentication)
 The Authentication Service is responsible for handling user authentication and authorization using JSON Web Tokens (JWT). It provides the necessary functionality to securely manage user access to the API endpoints. This service includes the following features:
 
 - **User Registration:** Allow users to create accounts by providing necessary details, such as username, email, and password.

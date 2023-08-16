@@ -62,25 +62,32 @@ public class SensorController {
 
     @GetMapping("/sensors/{id}")
     // @ApiOperation(value = "Get a sensor", notes = "Add a sensors by his id")
-    public Sensor getSensorById(@PathVariable Long id) {
-        return sensorService.getSensorById(id);
+    public ResponseEntity<Sensor> getSensorById(@PathVariable Long id) {
+        return new ResponseEntity<>(sensorService.getSensorById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/sensors/{id}")
+    @PutMapping("/members/{memberId}/sensors/{id}")
     // @ApiOperation(value = "Edit a sensor", notes = "Edit a sensor from Json to the repository")
-    public Sensor updateSensor(@PathVariable Long id, @RequestBody Sensor sensor) {
-        sensor.setId(id);
-        return sensorService.updateSensor(sensor);
+    public ResponseEntity<Sensor> updateSensor(@PathVariable Long memberId, @PathVariable Long id, @RequestBody Sensor sensorRequest) {
+        Sensor sensor = memberService.getMemberById(memberId).map(member -> {
+            sensorRequest.setId(id);
+            sensorRequest.setMember(member);
+            return sensorService.updateSensor(sensorRequest);
+        })
+        .orElseThrow(() -> new ResourceNotFoundException("Not found Member with id = " + memberId));
+
+        return new ResponseEntity<>(sensor, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/sensors/{id}")
     // @ApiOperation(value = "Delete a sensor", notes = "Delete a sensor by his id")
-    public void deleteSensor(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteSensor(@PathVariable Long id) {
         sensorService.deleteSensor(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/members/{memberId}/sensors")
-    public ResponseEntity<List<Sensor>> deleteAllSensorsOfMember(@PathVariable(value = "memberId") Long memberId) {
+    public ResponseEntity<Void> deleteAllSensorsOfMember(@PathVariable(value = "memberId") Long memberId) {
         if (!memberService.existsById(memberId)) {
             throw new ResourceNotFoundException("Not found Member with id = " + memberId);
         }

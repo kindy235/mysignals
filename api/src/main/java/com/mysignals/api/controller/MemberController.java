@@ -44,5 +44,12 @@ public class MemberController {
         memberService.deleteMemberById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PutMapping("/{id}")
+    // @ApiOperation(value = "Edit a sensor", notes = "Edit a sensor from Json to the repository")
+    public ResponseEntity<Member> updateMember(@PathVariable Long id, @RequestBody Member member) {
+        member.setId(id);
+        return new ResponseEntity<>(memberService.saveMember(member), HttpStatus.CREATED);
+    }
 }
 

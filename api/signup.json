@@ -37,5 +37,14 @@
     
     {
         "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtb2QiLCJpYXQiOjE2ODc4MzE0NDgsImV4cCI6MTY4NzkxNzg0OH0.EzXZ86MWMCyhfxRAgUtJ_yXUEghueQFojq1Axx5je7E"
+    },
+    {
+      "name": "DOE",
+      "surname": "John",
+      "picture": "https://static.wikia.nocookie.net/twistedmetal/images/f/f3/TMBJohnDoe.jpg/revision/latest/thumbnail/width/360/height/360?cb=20110825141821",
+      "description": "I am John DOE",
+      "height": 185,
+      "weight": 80,
+      "birthday": "2023-08-15"
     }
 ]

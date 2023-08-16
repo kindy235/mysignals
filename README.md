@@ -58,8 +58,9 @@ The API is based SpringBoot API
 
 ### Tools
 
-1. IntelliJ IDEA, Visual Studio Code...
-2. Java JDK & JRE (Version >= 8)
+- IntelliJ IDEA, Visual Studio Code...
+- Java JDK & JRE (Version >= 8)
+- Maven
 
 ### Architecture
 
@@ -104,7 +105,7 @@ Overall, these three services work together to provide a comprehensive and secur
 
 ### Database Management System (DBMS)
 
-#### H2 Database (developpment)
+#### H2 Database (in developpment)
 
 #### POSTGRES + PGADMIN4 (deployment)
 
@@ -120,11 +121,12 @@ Overall, these three services work together to provide a comprehensive and secur
 
 ## Android Application
 
-### Tools
+### Requirements
 
-#### Android Studio or IntelliJ IDEA
+- IntelliJ IDEA, Android Studio
+- Java JDK & JRE (Version >= 8)
+- Android Device(android minimum SDK >= 4.3.0)
 
-#### Android SDK
 
 ### Architecture
 
@@ -136,47 +138,145 @@ Overall, these three services work together to provide a comprehensive and secur
 
 ### API
 
-Inteface Web screen
+- Launch the API
 
-**Authentication**
+![API Launcher](images/launch-api.png "MySignals device and Sensors")
+
+- Inteface Web screen : http://localhost:8080/swagger-ui/index.html#/
+
+![API Launcher](images/api-interface.png "MySignals device and Sensors")
+
+**Authentication Service**
+
+![API Launcher](images/auth-service.png "MySignals device and Sensors")
+
 1. Registration
-2. Login
+
+ - Client Request
+  
+![API Launcher](images/register.png "MySignals device and Sensors")
+
+ - API Response
+
+![API Launcher](images/register-response.png "MySignals device and Sensors")
+
+1. Login
+
+ - Client Request
+
+![API Launcher](images/login-request.png "MySignals device and Sensors")
+
+ - API Response
+
+![API Launcher](images/login-response.png "MySignals device and Sensors")
+
+**How to use the user `AccesToken` to make HTTP Request to the API**
+
+![API Launcher](images/member-create2.png "MySignals device and Sensors")
 
 **Member Service**
-1. Create
 
+![API Launcher](images/member-service.png "MySignals device and Sensors")
 
-2. Read
+1. Create Operation : add a Member (POST)
 
+- Request 
 
-3. Delele
+![API Launcher](images/member-create1.png "MySignals device and Sensors")
 
+- Response
+
+![API Launcher](images/member-create3.png "MySignals device and Sensors")
+
+1. Read Operation : get a Member or All member ()
+
+![API Launcher](images/member-get.png "MySignals device and Sensors")
+
+3. Delele Operation (HTTP DELETE) : delete a member by id
+
+![API Launcher](images/member-delete.png "MySignals device and Sensors")
 
 4. Update
 
+![API Launcher](images/member-put.png "MySignals device and Sensors")
 
 **Sensor Service**
+
+![API Launcher](images/sensor-service.png "MySignals device and Sensors")
+
 1. Create
 
+![API Launcher](images/sensor-create.png "MySignals device and Sensors")
 
 2. Read
+
+![API Launcher](images/sensor-read.png "MySignals device and Sensors")
 
 
 3. Delele
 
+![API Launcher](images/sensor-delete.png "MySignals device and Sensors")
 
 4. Update
+
+![API Launcher](images/sensor-put.png "MySignals device and Sensors")
 
 ### MySignals Bluetooth Device
 
+   - Activate Bluetooth
+
+![API Launcher](images/device-activate.png "MySignals device and Sensors")
+
+   - Start Monitoring
+
+![API Launcher](images/device-monitor.png "MySignals device and Sensors")
 
 ### Android App
 
+<style>
+.custom-image {
+  width: 300px;
+  height: auto;
+  margin: 10px
+}
+</style>
+
 **Installation**
 
-**Connexion to MySignal Device**
+1. Android developpement mode
+
+<img src="images/android-dev-mode.jpg" class="custom-image">
+
+1. Android device detection in intelliJ
+
+![API Launcher](images/installation1.png "MySignals device and Sensors")
+
+3. `My Signals APK` Installation
+
+![API Launcher](images/installation2.png "MySignals device and Sensors")
+
+**Authentication via android App**
+
+<img src="images/android-register.jpg" class="custom-image">
+<img src="images/android-login1.jpg" class="custom-image">
+<img src="images/android-login2.jpg" class="custom-image">
 
 **Data Visualization**
+
+1. Add a member
+   
+<img src="images/android-member1.jpg" class="custom-image">
+
+
+2. Bluetooth Connexion to MySignal Device, Collect and Save sensors data
+
+<img src="images/android-scan1.jpg" class="custom-image">
+<img src="images/android-scan2.jpg" class="custom-image">
+<img src="images/android-btconnect.jpg" class="custom-image">
+
+3. Realtime Data Visualization
+
+<img src="images/android-data.jpg" class="custom-image">
 
 ## Improvements
 

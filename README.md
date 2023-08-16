@@ -1,11 +1,3 @@
-<style>
-.custom-image {
-  width: 250px;
-  height: auto;
-  margin: 10px
-}
-</style>
-
 # My Signals project
 Aboubacar BAH\
 Taoufiq Boussraf
@@ -310,7 +302,7 @@ The design Pattern use for android developement is MVVM
 
 1. Android developpement mode
 
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-dev-mode.jpg?raw=true" class="custom-image">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-dev-mode.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
 
 1. Android device detection in intelliJ
 
@@ -322,26 +314,26 @@ The design Pattern use for android developement is MVVM
 
 **Authentication via android App**
 
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-register.jpg?raw=true" class="custom-image">
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-login1.jpg?raw=true" class="custom-image">
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-login2.jpg?raw=true" class="custom-image">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-register.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-login1.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-login2.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
 
 **Data Visualization**
 
 1. Add a member
    
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-member1.jpg?raw=true" class="custom-image">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-member1.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
 
 
 2. Bluetooth Connexion to MySignal Device, Collect and Save sensors data
 
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-scan1.jpg?raw=true" class="custom-image">
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-scan2.jpg?raw=true" class="custom-image">
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-btconnect.jpg?raw=true" class="custom-image">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-scan1.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-scan2.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-btconnect.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
 
 3. Realtime Data Visualization
 
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-data.jpg?raw=true" class="custom-image">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-data.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
 
 ## Improvements
 

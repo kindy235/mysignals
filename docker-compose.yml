@@ -36,8 +36,6 @@ services:
     api_services:
         build: ./api
         container_name: api_services
-        ports: 
-            - 8080:8080
         networks:
             - mynetwork
         depends_on: 

@@ -1,3 +1,11 @@
+<style>
+.custom-image {
+  width: 250px;
+  height: auto;
+  margin: 10px
+}
+</style>
+
 # My Signals project
 Aboubacar BAH\
 Taoufiq Boussraf
@@ -6,7 +14,7 @@ Taoufiq Boussraf
 
 This project involves collecting health data in real time from a "MySignals" IoT device to which several sensors are connected. Once collected, this data needs to be stored in a personal cloud API to be visualised in the form of graphs.
 
-![alt text for screen readers](images/architecture.png "MySignals device and Sensors")
+![alt text for screen readers](https://github.com/kindy235/mysignals/blob/main/images/architecture.png?raw=true "MySignals device and Sensors")
 
 **The main objectives are :** 
 
@@ -28,7 +36,7 @@ This project involves collecting health data in real time from a "MySignals" IoT
 
 ## Specifications
 
-![alt text for screen readers](images/mysignals-sensors.png "MySignals device and Sensors")
+![alt text for screen readers](https://github.com/kindy235/mysignals/blob/main/images/mysignals-sensors.png?raw=true "MySignals device and Sensors")
 
 
 1. **MySignals IoT Configuration:** Configure and set up the MySignals IoT device by connecting appropriate sensors and configuring communication settings.
@@ -64,7 +72,7 @@ The API is based SpringBoot API
 
 ### Architecture
 
-![API Architecture](images/architecture-api.png "MySignals device and Sensors")
+![API Architecture](https://github.com/kindy235/mysignals/blob/main/images/architecture-api.png?raw=true "MySignals device and Sensors")
 
 ### Services
 
@@ -105,19 +113,77 @@ Overall, these three services work together to provide a comprehensive and secur
 
 ### Database Management System (DBMS)
 
+You can select the DBMS in spingboot configuration file `application.properties`
+
 #### H2 Database (in developpment)
 
-#### POSTGRES + PGADMIN4 (deployment)
+   - Database configuration for H2
+
+```
+# H2 Database configuration
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.username=sa
+spring.datasource.password=
+spring.datasource.driver-class-name=org.h2.Driver
+# Hibernate configuration
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=create
+# H2 console configuration
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+```
+
+#### POSTGRES Database (deployment)
+
+   - Database configuration for POSTGRES
+
+```
+# Postgres Database
+spring.datasource.url= jdbc:postgresql://database_service:5432/sensorsdb
+spring.datasource.username= admin
+spring.datasource.password= adminadmin
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation= true
+spring.jpa.properties.hibernate.dialect= org.hibernate.dialect.PostgreSQLDialect
+# Hibernate ddl auto (create, create-drop, validate, update)
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=update
+```
+
+if we dont use H2 database, we need to insert data in the roles table of our database by excuting these lines : 
+
+```sql
+INSERT INTO roles(name) VALUES('ROLE_USER');
+INSERT INTO roles(name) VALUES('ROLE_MODERATOR');
+INSERT INTO roles(name) VALUES('ROLE_ADMIN');
+```
 
 ### Classes Diagram
 
-![Classes Diagram](images/api.png "MySignals device and Sensors")
+![Classes Diagram](https://github.com/kindy235/mysignals/blob/main/images/api.png?raw=true "MySignals device and Sensors")
 
 ## Services Deployment 
 
-### Docker compose file
+### Docker compose file `docker-compose.yml`
+
+
+```sh
+docker compose down && docker compose build && docker compose up -d
+```
+
+To verify if services are launch, use `docker compose ps` command: 
+
+```sh
+docker compose ps
+NAME                COMMAND                  SERVICE             STATUS              PORTS
+api_services        "/bin/sh -c 'java -j…"   api_services        running
+database_service    "docker-entrypoint.s…"   database_service    running             0.0.0.0:5432->5432/tcp
+pgadmin4            "/entrypoint.sh"         pgadmin             running             443/tcp, 0.0.0.0:5050->80/tcp
+proxy_service       "httpd-foreground"       proxy_service       running             0.0.0.0:8000->80/tcp
+```
 
 ### Github Pipeline (TODO)
+
 
 ## Android Application
 
@@ -127,12 +193,19 @@ Overall, these three services work together to provide a comprehensive and secur
 - Java JDK & JRE (Version >= 8)
 - Android Device(android minimum SDK >= 4.3.0)
 
-
 ### Architecture
+
+The design Pattern use for android developement is MVVM
+
+![API Launcher](https://journaldev.nyc3.digitaloceanspaces.com/2018/04/android-mvvm-pattern.png "MySignals device and Sensors")
+
+   - M : Model
+   - V : View
+   - VM : ViewModel 
 
 ### Classes Diagram
 
-![Classes Diagram](images/mysignalsapp.png "MySignals device and Sensors")
+![Classes Diagram](https://github.com/kindy235/mysignals/blob/main/images/mysignalsapp.png?raw=true "MySignals device and Sensors")
 
 ## Demo
 
@@ -140,143 +213,135 @@ Overall, these three services work together to provide a comprehensive and secur
 
 - Launch the API
 
-![API Launcher](images/launch-api.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/launch-api.png?raw=true "MySignals device and Sensors")
 
 - Inteface Web screen : http://localhost:8080/swagger-ui/index.html#/
 
-![API Launcher](images/api-interface.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/api-interface.png?raw=true "MySignals device and Sensors")
 
 **Authentication Service**
 
-![API Launcher](images/auth-service.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/auth-service.png?raw=true "MySignals device and Sensors")
 
 1. Registration
 
  - Client Request
   
-![API Launcher](images/register.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/register.png?raw=true "MySignals device and Sensors")
 
  - API Response
 
-![API Launcher](images/register-response.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/register-response.png?raw=true "MySignals device and Sensors")
 
 1. Login
 
  - Client Request
 
-![API Launcher](images/login-request.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/login-request.png?raw=true "MySignals device and Sensors")
 
  - API Response
 
-![API Launcher](images/login-response.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/login-response.png?raw=true "MySignals device and Sensors")
 
 **How to use the user `AccesToken` to make HTTP Request to the API**
 
-![API Launcher](images/member-create2.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/member-create2.png?raw=true "MySignals device and Sensors")
 
 **Member Service**
 
-![API Launcher](images/member-service.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/member-service.png?raw=true "MySignals device and Sensors")
 
 1. Create Operation : add a Member (POST)
 
 - Request 
 
-![API Launcher](images/member-create1.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/member-create1.png?raw=true "MySignals device and Sensors")
 
 - Response
 
-![API Launcher](images/member-create3.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/member-create3.png?raw=true "MySignals device and Sensors")
 
 1. Read Operation : get a Member or All member ()
 
-![API Launcher](images/member-get.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/member-get.png?raw=true "MySignals device and Sensors")
 
 3. Delele Operation (HTTP DELETE) : delete a member by id
 
-![API Launcher](images/member-delete.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/member-delete.png?raw=true "MySignals device and Sensors")
 
 4. Update
 
-![API Launcher](images/member-put.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/member-put.png?raw=true "MySignals device and Sensors")
 
 **Sensor Service**
 
-![API Launcher](images/sensor-service.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/sensor-service.png?raw=true "MySignals device and Sensors")
 
 1. Create
 
-![API Launcher](images/sensor-create.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/sensor-create.png?raw=true "MySignals device and Sensors")
 
 2. Read
 
-![API Launcher](images/sensor-read.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/sensor-read.png?raw=true "MySignals device and Sensors")
 
 
 3. Delele
 
-![API Launcher](images/sensor-delete.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/sensor-delete.png?raw=true "MySignals device and Sensors")
 
 4. Update
 
-![API Launcher](images/sensor-put.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/sensor-put.png?raw=true "MySignals device and Sensors")
 
 ### MySignals Bluetooth Device
 
    - Activate Bluetooth
 
-![API Launcher](images/device-activate.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/device-activate.png?raw=true "MySignals device and Sensors")
 
    - Start Monitoring
 
-![API Launcher](images/device-monitor.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/device-monitor.png?raw=true "MySignals device and Sensors")
 
 ### Android App
-
-<style>
-.custom-image {
-  width: 300px;
-  height: auto;
-  margin: 10px
-}
-</style>
 
 **Installation**
 
 1. Android developpement mode
 
-<img src="images/android-dev-mode.jpg" class="custom-image">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-dev-mode.jpg?raw=true" class="custom-image">
 
 1. Android device detection in intelliJ
 
-![API Launcher](images/installation1.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/installation1.png?raw=true "MySignals device and Sensors")
 
 3. `My Signals APK` Installation
 
-![API Launcher](images/installation2.png "MySignals device and Sensors")
+![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/installation2.png?raw=true "MySignals device and Sensors")
 
 **Authentication via android App**
 
-<img src="images/android-register.jpg" class="custom-image">
-<img src="images/android-login1.jpg" class="custom-image">
-<img src="images/android-login2.jpg" class="custom-image">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-register.jpg?raw=true" class="custom-image">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-login1.jpg?raw=true" class="custom-image">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-login2.jpg?raw=true" class="custom-image">
 
 **Data Visualization**
 
 1. Add a member
    
-<img src="images/android-member1.jpg" class="custom-image">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-member1.jpg?raw=true" class="custom-image">
 
 
 2. Bluetooth Connexion to MySignal Device, Collect and Save sensors data
 
-<img src="images/android-scan1.jpg" class="custom-image">
-<img src="images/android-scan2.jpg" class="custom-image">
-<img src="images/android-btconnect.jpg" class="custom-image">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-scan1.jpg?raw=true" class="custom-image">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-scan2.jpg?raw=true" class="custom-image">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-btconnect.jpg?raw=true" class="custom-image">
 
 3. Realtime Data Visualization
 
-<img src="images/android-data.jpg" class="custom-image">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-data.jpg?raw=true" class="custom-image">
 
 ## Improvements
 

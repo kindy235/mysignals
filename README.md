@@ -1,3 +1,4 @@
+
 # My Signals project
 Aboubacar BAH\
 Taoufiq Boussraf
@@ -59,7 +60,7 @@ The API is based SpringBoot API
 ### Tools
 
 - IntelliJ IDEA, Visual Studio Code...
-- Java JDK & JRE (Version >= 8)
+- Java (Version >= 8)
 - Maven
 
 ### Architecture
@@ -105,9 +106,11 @@ Overall, these three services work together to provide a comprehensive and secur
 
 ### Database Management System (DBMS)
 
-You can select the DBMS in spingboot configuration file `application.properties`
+You can change the DBMS in spingboot configuration file `application.properties`
 
 #### H2 Database (in developpment)
+
+H2 is the choosen database for developpment mode : 
 
    - Database configuration for H2
 
@@ -128,6 +131,8 @@ spring.h2.console.path=/h2-console
 
 #### POSTGRES Database (deployment)
 
+In deployment mode, we use Postgres as DBMS
+
    - Database configuration for POSTGRES
 
 ```
@@ -142,7 +147,7 @@ spring.jpa.show-sql=true
 spring.jpa.hibernate.ddl-auto=update
 ```
 
-if we dont use H2 database, we need to insert data in the roles table of our database by excuting these lines : 
+> **IMPORTANT** : if H2 database is not used, we should insert data in the `roles` table of our database by excuting these lines (this task is automaticaly done, if H2 Database is used, so we can skip this step) : 
 
 ```sql
 INSERT INTO roles(name) VALUES('ROLE_USER');
@@ -154,16 +159,17 @@ INSERT INTO roles(name) VALUES('ROLE_ADMIN');
 
 ![Classes Diagram](https://github.com/kindy235/mysignals/blob/main/images/api.png?raw=true "MySignals device and Sensors")
 
-## Services Deployment 
+## Services deployment via `Docker`
 
 ### Docker compose file `docker-compose.yml`
 
+- To deploy the services, execute this command in your terminal where your `docker-compose.yml` is located :
 
 ```sh
 docker compose down && docker compose build && docker compose up -d
 ```
 
-To verify if services are launch, use `docker compose ps` command: 
+- To verify if services are launch, use `docker compose ps` command :
 
 ```sh
 docker compose ps
@@ -176,7 +182,6 @@ proxy_service       "httpd-foreground"       proxy_service       running        
 
 ### Github Pipeline (TODO)
 
-
 ## Android Application
 
 ### Requirements
@@ -187,7 +192,7 @@ proxy_service       "httpd-foreground"       proxy_service       running        
 
 ### Architecture
 
-The design Pattern use for android developement is MVVM
+The design Pattern used for android developement is MVVM:
 
 ![API Launcher](https://journaldev.nyc3.digitaloceanspaces.com/2018/04/android-mvvm-pattern.png "MySignals device and Sensors")
 
@@ -207,11 +212,13 @@ The design Pattern use for android developement is MVVM
 
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/launch-api.png?raw=true "MySignals device and Sensors")
 
-- Inteface Web screen : http://localhost:8080/swagger-ui/index.html#/
+- API Web Inteface  : http://localhost:8080/swagger-ui/index.html#/
 
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/api-interface.png?raw=true "MySignals device and Sensors")
 
 **Authentication Service**
+
+-  Authentication Service `Endpoints` :
 
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/auth-service.png?raw=true "MySignals device and Sensors")
 
@@ -237,9 +244,15 @@ The design Pattern use for android developement is MVVM
 
 **How to use the user `AccesToken` to make HTTP Request to the API**
 
+- Add the `AccesToken` to the HTTP `Authorization` header :
+
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/member-create2.png?raw=true "MySignals device and Sensors")
 
+Now you can start making request to the API.
+
 **Member Service**
+
+-  Member Service `Endpoints` :
 
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/member-service.png?raw=true "MySignals device and Sensors")
 
@@ -253,7 +266,7 @@ The design Pattern use for android developement is MVVM
 
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/member-create3.png?raw=true "MySignals device and Sensors")
 
-1. Read Operation : get a Member or All member ()
+1. Read Operation : get a Member or all member ()
 
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/member-get.png?raw=true "MySignals device and Sensors")
 
@@ -261,28 +274,30 @@ The design Pattern use for android developement is MVVM
 
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/member-delete.png?raw=true "MySignals device and Sensors")
 
-4. Update
+4. Update : edit a member
 
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/member-put.png?raw=true "MySignals device and Sensors")
 
 **Sensor Service**
 
+-  Sensor Service `Endpoints` :
+
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/sensor-service.png?raw=true "MySignals device and Sensors")
 
-1. Create
+1. Create Operation : add a member's sensor data to the database
 
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/sensor-create.png?raw=true "MySignals device and Sensors")
 
-2. Read
+2. Read Operation : get a member's sensors data from the database
 
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/sensor-read.png?raw=true "MySignals device and Sensors")
 
 
-3. Delele
+3. Delele Operation : delete a sensor data from the database
 
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/sensor-delete.png?raw=true "MySignals device and Sensors")
 
-4. Update
+4. Update Operation : edit a member's sensor data from the database
 
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/sensor-put.png?raw=true "MySignals device and Sensors")
 
@@ -300,42 +315,71 @@ The design Pattern use for android developement is MVVM
 
 **Installation**
 
-1. Android developpement mode
+> **IMPORTANT**: Before Install the APP, make sure that the API URL in the android source code is correct. If it's not, you should change the `BASE_URL` attribute in the `Constants` Class like this : 
 
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-dev-mode.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
+```java
+package com.example.mysignalsapp.utils;
 
-1. Android device detection in intelliJ
+public class Constants {
+    public static final String BASE_URL = "https://172.17.33.64:8080/";
+    public static final String LOGIN_URL = "api/auth/signin";
+    public static final String REGISTRATION_URL = "api/auth/signup";
+    public static final String SENSORS_URL = "api/sensors";
+    public static final String MEMBERS_URL = "api/members";
+}
+```
+
+> **IMPORTANT**: to use `HTTP` instead `HTTPS` for the communication to the API, you must add this line to the `AndroidManifest.xml` file (to use only in developpment mode) : 
+
+```xml
+android:usesCleartextTraffic="true"
+```
+
+1. Android developpement mode activation
+
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-dev-mode.jpg?raw=true" style="width:215px;height:auto;margin:0 10px">
+
+2. Android device detection in intelliJ
 
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/installation1.png?raw=true "MySignals device and Sensors")
 
-3. `My Signals APK` Installation
+3. `MySignals APK` Installation
 
 ![API Launcher](https://github.com/kindy235/mysignals/blob/main/images/installation2.png?raw=true "MySignals device and Sensors")
 
 **Authentication via android App**
 
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-register.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-login1.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-login2.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-register.jpg?raw=true" style="width:215px;height:auto;margin:0 10px">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-login1.jpg?raw=true" style="width:215px;height:auto;margin:0 10px">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-login2.jpg?raw=true" style="width:215px;height:auto;margin:0 10px">
 
 **Data Visualization**
 
 1. Add a member
    
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-member1.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
-
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-member1.jpg?raw=true" style="width:215px;height:auto;margin:0 10px">
 
 2. Bluetooth Connexion to MySignal Device, Collect and Save sensors data
 
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-scan1.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-scan2.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-btconnect.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-scan1.jpg?raw=true" style="width:215px;height:auto;margin:0 10px">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-scan2.jpg?raw=true" style="width:215px;height:auto;margin:0 10px">
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-btconnect.jpg?raw=true" style="width:215px;height:auto;margin:0 10px">
 
-3. Realtime Data Visualization
+> **IMPORTANT** : The maximum sensors we can only select, in `bluetooth mode` is `11`
 
-<img src="https://github.com/kindy235/mysignals/blob/main/images/android-data.jpg?raw=true" style="width:250px;height:auto;margin:0 10px">
+1. Realtime Data Visualization
+
+<img src="https://github.com/kindy235/mysignals/blob/main/images/android-data.jpg?raw=true" style="width:215px;height:auto;margin:0 10px">
 
 ## Improvements
+
+> - Setup API Base URL dynamycaly for the Android APP
+> - Make sure the user registrattion provide a valid email (Email verification and validation)
+> - Actually any user can acces to all members in the API. So the next improvement can be separete each user with his own members
+> - Determine the maximum an the minimun of each sensor data in data visualization mode
+> - Add a web interface to the TIGUM website for the data visualization by using the API
+> - Search and Fixes the bugs in the Android App
+> - Found a way to show each member's picture in the Android App
 
 ## Sources
 
@@ -346,3 +390,4 @@ The design Pattern use for android developement is MVVM
   - http://downloads.libelium.com/mysignals/mysignals_android/MySignalsConnectKit.jar.zip
   - http://downloads.libelium.com/mysignals/mysignals_android/MySignalsConnectKitDoc-android.zip
   - http://downloads.libelium.com/mysignals/mysignals_android/MySignalsConnectTest-android.zip
+- Code source URL : https://github.com/kindy235/mysignals.git

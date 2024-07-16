@@ -1,7 +1,8 @@
 
 # My Signals project
 Aboubacar BAH\
-Taoufiq Boussraf
+Taoufiq Boussraf\
+Leonardo Juan Ramirez Lopez
 
 ## Objectives
 
